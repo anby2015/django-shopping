@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+	<link rel="stylesheet" href="{{MEDIA_URL}}shopping/css/shopping.css" />
+	<script type="text/javascript" src="{{MEDIA_URL}}shopping/js/labs_json.js"></script>	
+	<script type="text/javascript">
+	var cartSelectionChanged = false;
+	$(document).ready(function(){
+		$("#update_cart").bind("click", updateCart);
+		$("#paypal_submit").bind("click", handlePaypalClick);
+		$("#selections input").bind("click", function(){
+			cartSelectionChanged = true;
+		});
+		//turn the update cart link blue when a quantity is changed
+		$("#selections input").bind("change", function(){
+			$("#update_cart").css("color", "#0085CF");
+		});
+		$("#empty_cart").bind("click", handleEmptyCart);
+		//set the notify url for paypal
+		var notifyPath = $('#shopping_notify_url').attr("value");
+		$('#shopping_notify_url').attr("value", getURL() + notifyPath);
+	});
+	
+	function handleEmptyCart(e){
+		e.preventDefault();
+		var answer = confirm("Are you sure you want to empty your cart?");
+		if (answer){
+			//empty cart
+			$.ajax({
+				'url': '{% url shopping-empty-cart %}',
+				'success': function(response){
+					 //refresh page
+					 window.location = "";	
+				}
+				});
+		}
+	}
+	
+	function handlePaypalClick(e){
+		if(cartSelectionChanged){
+			e.preventDefault();
+			updateCart(e, true);
+		}
+		
+	}
+	
+	function updateCart(e, andCheckout){
+		e.preventDefault();
+		//send updates to server
+		var selections = {};
+		$("#selections input").each(function(){
+			var selection = {};
+			selections[$(this).attr("name")] = $(this).attr("value");
+		});
+		var selectionsSerialized = $.param(selections);
+		
+		$.post("{% url shopping-update %}", selectionsSerialized, function(xml){
+			cartSelectionChanged = false;
+			updatePaypalCheckoutForm(xml);
+			if (andCheckout == true){
+				$("#paypal_submit").trigger("click");
+			}
+			//inform the user of success
+			$("#cart_updated_notice").slideDown("fast")
+			setTimeout(
+				'$("#cart_updated_notice").slideUp("fast");',
+				3000
+			);
+		},
+		"XML");
+	}
+	
+	function updatePaypalCheckoutForm(xml){
+		var newFormHtml = '';
+		$(xml).find("selection").each(function(){
+			var selection = $(this);
+			var id = $(selection).find('id').text();
+			var quantity = $(selection).find('quantity').text();
+			$('#paypal_selections input#'+id+'').attr("value", quantity);
+		});
+	}
+	
+	function getURL(){
+		var fullURL = document.location.href;
+		var array = fullURL.split("//");
+		var protocol = array[0];
+		var domain = array[1].split("/")[0];
+		var url = protocol + '//' + domain;
+		return url;	
+	}
+	
+	</script>
+{% endblock extrahead %}
+
+{% block content %}
+	<h1>Review and Checkout</h1>
+	<div id="shopping_review_checkout">
+	{% ifequal order.get_item_count 0 %}
+		<p class="shopping_notice">Your cart is empty</p>
+		<a id="continue_shopping" href="{% url shopping-items %}">Continue Shopping</a>
+	{% else %}
+		<div id="other_cart_actions">
+			<a id="continue_shopping" href="{% url shopping-items %}">Continue Shopping</a>
+			&nbsp;<a id="empty_cart" href="#">Empty Cart</a>
+			&nbsp;<a id="update_cart" href="#">Update Cart</a>
+			<span id="cart_updated_notice" class="shopping_notice" style="display:none;">&nbsp;Cart Updated</span>
+		</div>
+		<div id="selections">
+		{% for selection in order.selection_set.all %}
+			{% ifnotequal selection.quantity 0 %}
+			<div class="shopping_item_bar_checkout">
+				<span class="shopping_item_name">{{selection.item.name}}
+					{% ifnotequal selection.item_variations.count 0 %}
+						<span class="shopping_item_description">
+						({% for variation in selection.item_variations.all %}
+							{{variation.variation_value}} 
+						{% endfor %})</span>
+					{% endifnotequal %}
+				</span>
+				<span class="shopping_item_price">${{selection.item.price}} x</span> 
+				<span class="shopping_selection_quantity"><input type="text" name={{selection.id}} value="{{selection.quantity}}" /></span>
+			</div>
+			{% endifnotequal %}
+		{% endfor %}
+		</div>
+		
+		<form target="paypal" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" id="paypalcheckout">
+			<input type="hidden" name="cmd" value="_cart">
+			<input type="hidden" name="upload" value="1">
+			<input type="hidden" name="business" value="{{business}}">
+			<input type="hidden" name="notify_url" id="shopping_notify_url" value="{% url shopping-paypal-notify %}">
+			<input type="hidden" name="lc" value="US">
+			<input type="hidden" name="currency_code" value="USD">
+			<input type="hidden" name="cn" value="Add special instructions if any">
+			<span id="paypal_selections">
+			{% for selection in order.selection_set.all %}
+				{% ifnotequal selection.quantity 0 %}
+				<input type="hidden" name="item_name_{{forloop.counter}}" value="{{selection.item.name}}">
+				<input type="hidden" name="amount_{{forloop.counter}}" value="{{selection.item.price}}">
+				<input type="hidden" id="{{selection.id}}" name="quantity_{{forloop.counter}}" value="{{selection.quantity}}">
+				{% endifnotequal %}
+			{% endfor %}
+			</span>
+			<input id="paypal_submit" class="shopping_checkout" type="image" src="{{MEDIA_URL}}shopping/images/paypal_checkout.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+		</form>
+	{% endifequal %}	
+	
+	</div>
+{% endblock content %}

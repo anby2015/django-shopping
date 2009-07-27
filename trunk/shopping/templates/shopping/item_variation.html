@@ -1,0 +1,9 @@
+
+{% for category in categories %}
+	{{category.name}}<br/>
+	<select id="varaition_{{category.name}}" name="variation_{{category.name}}" class="item_variation">		
+	{% for variation in category.variations %}
+		<option value="{{variation.variation_value}}">{{variation.variation_value}}</option>
+	{% endfor %}	
+	</select><br/>
+{% endfor %}

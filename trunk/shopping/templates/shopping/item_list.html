@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}shopping/css/shopping.css" />
+	
+	<!-- magictags CSS -->
+	<link rel="stylesheet" href="{{MEDIA_URL}}magictags/css/magictags.css" />
+	<!-- enable magictags -->	
+	<script type="text/javascript" src="{{MEDIA_URL}}magictags/js/jquery.magictags.js"></script>
+	<script type="text/javascript">
+			$(document).ready(function(){
+				//start MagicTags, optionally passing the fade effect speed option
+				magictags = $.MagicTags({fadeSpeed: "medium"});
+			});
+	</script>
+	
+{% endblock extrahead %}
+
+{% block content %}
+	{% load shopping_tags %}
+	{% load magictags %}
+	<!-- display the filter by magictags -->
+	{% get_list_magictags items "shopping_tags" %}
+	
+	<!-- display items, tagging them with their magictags-->
+	{% for item in items %}
+		<div class="shopping_item_bar item_list shopping_tags {% magictag item %}">
+			<span class="shopping_item_main_image">
+				<!--<a href="/shopping/items/{{item.name_slug}}">-->
+				<a href="{% url shopping-item item.name_slug %}">	
+				<img src="{{item.get_main_image.get_shopping_thumbnail_url}}" alt="{{item.name}}" />
+				</a>
+			</span>
+			<span class="shopping_item_name"><a href="{% url shopping-item item.name_slug %}">{{item.name}}</a></span>
+			<span class="shopping_item_price">${{item.price}}</span>
+			<span class="num_in_cart">{% get_num_in_cart item order %} in cart</span>
+			<span class="shopping_item_description">{{item.description}}</span> 
+		</div>
+	{% endfor %}
+
+<a href="{% url shopping-cart %}">View Cart (<span id="cart_item_count">{{order.get_item_count}}</span> items)</a>
+
+{% endblock content %}
