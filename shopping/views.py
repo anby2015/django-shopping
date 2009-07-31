@@ -164,10 +164,19 @@ def view_item_details(request, slug):
 
 def handle_paypal_notify(request):
     ''' This method gets called when an order is purchased or refunded. Paypal does a POST callback'''
+    #get order info
+    payer_email = request.POST.__get_item__('payer_email')
+    #set order to complete
+    
+    #send emails?
+    
+    #update the page?
+    
     #TEST
+    
     filename = "test-notify.txt"
     file = open(filename, 'w')
-    file.write('--------Paypal Notify!!!---------')
+    file.write(payer_email)
     file.close()
     return HttpResponse()
     
