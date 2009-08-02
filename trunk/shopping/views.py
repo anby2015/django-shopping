@@ -167,19 +167,36 @@ def handle_paypal_notify(request):
     #get order info
     log = "notification result: "
     payer_email = ""
+    
+    #TODO: post back to PayPal system to validate
+    
+    #assign post variables
     if request.method == "POST":
         payer_email = request.POST.__getitem__('payer_email')
-        log += payer_email
+        payment_status = request.POST.__getitem('payment_status')
+        receiver_email = request.POST.__getitem('receiver_email')
+        mc_gross = request.POST.__getitem('mc_gross')
         
-#    log += payer_email
+        log += payer_email
+        log += "   //   "
+        log += payment_status
+        log += "   //   "
+        log += receiver_email
+        log += "   //   "
+        log += mc_gross
+    
+    #Verify correct payment_status
+    #Verify correct receiver email
+    #Verify correct price
+    #Verify correct  
+        
     #set order to complete
     
     #send emails?
     
     #update the page?
     
-    #TEST
-    
+    #log bad requests for manual inspection
     filename = "test-notify.txt"
     file = open(filename, 'w')
     file.write(log)
