@@ -169,6 +169,7 @@ def handle_paypal_notify(request):
     payer_email = ""
     if request.method == "POST":
         payer_email = request.POST.__getitem__('payer_email')
+        log += payer_email
         
 #    log += payer_email
     #set order to complete
