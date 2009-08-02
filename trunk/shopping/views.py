@@ -166,7 +166,10 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     #get order info
     log = "notification result: "
-    payer_email = request.POST.__get_item__('payer_email')
+    payer_email = ""
+    if request.method == "POST":
+        payer_email = request.POST.__getitem__('payer_email')
+        
 #    log += payer_email
     #set order to complete
     
