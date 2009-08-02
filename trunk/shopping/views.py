@@ -176,7 +176,7 @@ def handle_paypal_notify(request):
     
     filename = "test-notify.txt"
     file = open(filename, 'w')
-    file.write(payer_email)
+    file.write("got an email address back")
     file.close()
     return HttpResponse()
     
