@@ -165,7 +165,14 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     ''' This method gets called when an order is purchased or refunded. Paypal does a POST callback'''
     #get order info
-    payer_email = request.POST.__get_item__('payer_email')
+    log = ""
+    payer_email = ""
+    try:
+        payer_email = request.POST.__get_item__('payer_email')
+    except:
+        log = "Error happened during parsing"
+        
+    log += payer_email
     #set order to complete
     
     #send emails?
@@ -176,7 +183,7 @@ def handle_paypal_notify(request):
     
     filename = "test-notify.txt"
     file = open(filename, 'w')
-    file.write("got an email address back")
+    file.write(log)
     file.close()
     return HttpResponse()
     
