@@ -181,10 +181,10 @@ def handle_paypal_notify(request):
     
     #TEST
     
-    filename = "test-notify.txt"
-    file = open(filename, 'w')
-    file.write("yeehaw")
-    file.close()
-    return HttpResponse()
+#    filename = "test-notify.txt"
+#    file = open(filename, 'w')
+#    file.write("yeehaw")
+#    file.close()
+    return HttpResponse("Paypal notification recieved")
     
     
