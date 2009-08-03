@@ -185,7 +185,6 @@ def handle_paypal_notify(request):
         log += payment_status
         log += ' - '
         log += order_id
-        log += order
 #        log += "   //   "
 #        log += receiver_email
 #        log += "   //   "
