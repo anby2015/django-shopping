@@ -165,6 +165,7 @@ def view_item_details(request, slug):
 #This method gets called when an order is purchased or refunded. Paypal does a POST callback
 def handle_paypal_notify(request):
     #get order info
+    print '---------processing paypal IPN-----------'
     log = "notification result: "
     payer_email = ""
     payment_status = ""
@@ -175,12 +176,15 @@ def handle_paypal_notify(request):
     if request.method == "POST":
         payer_email = request.POST.__getitem__('payer_email')
         payment_status = request.POST.__getitem__('payment_status')
+        order_id = request.POST.__getitem__('order_id')
 #        receiver_email = request.POST.__getitem('receiver_email')
 #        mc_gross = request.POST.__getitem('mc_gross')
         
         log += payer_email
-        log += ''
+        log += ' - '
         log += payment_status
+        log += ' - '
+        log += order_id
 #        log += "   //   "
 #        log += receiver_email
 #        log += "   //   "
