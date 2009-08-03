@@ -15,6 +15,7 @@
 	font-size:15px;
 	font-weight:bold;
 	color:#000000;
+	text-decoration:none;
 }
 
 .shopping_item_name a:hover{
@@ -46,7 +47,6 @@ span.shopping_item_description{
 }
 
 .item_list .shopping_item_name a{
-	text-decoration:none;
 	position:absolute;
 	top:10px;
 	left:85px;
@@ -196,7 +196,7 @@ span.shopping_item_main_image img:hover{
 #shopping_review_checkout span.shopping_item_name{
 	position:absolute;
 	left:10px;
-	top:4px;
+	top:5px;
 	margin-right:100px;
 	height:33px;
 	overflow:hidden;
