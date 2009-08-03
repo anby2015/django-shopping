@@ -190,19 +190,19 @@ def handle_paypal_notify(request):
         log += "   //   "
         log += receiver_email
         log += "   //   "
-        log += mc_gross
+        log += str(mc_gross)
         log += "   //   "
-        log += mc_handling
+        log += str(mc_handling)
         log += "   //   "
-        log += mc_shipping
+        log += str(mc_shipping)
         log += "   //   "
-        log += tax
+        log += str(tax)
     
         valid = True
         #Verify correct payment_status
         #Verify correct receiver email
-#        if receiver_email != settings.PAYPAL_ADDRESS:
-#            valid = False
+        if receiver_email != settings.PAYPAL_ADDRESS:
+            valid = False
         # TODO: Verify correct price:  gross - (shipping + tax + handling)
         price = (mc_gross - mc_handling - mc_shipping - tax)
         log += "   /Price:   "
