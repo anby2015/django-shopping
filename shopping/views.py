@@ -206,7 +206,7 @@ def handle_paypal_notify(request):
         # TODO: Verify correct price:  gross - (shipping + tax + handling)
         price = (mc_gross - mc_handling - mc_shipping - tax)
         log += "   /Price:   "
-        log += price
+        log += str(price)
         
         if valid:
             #set order to completed
