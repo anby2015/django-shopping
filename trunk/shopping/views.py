@@ -176,7 +176,7 @@ def handle_paypal_notify(request):
     if request.method == "POST":
         payer_email = request.POST.__getitem__('payer_email')
         payment_status = request.POST.__getitem__('payment_status')
-        order_id = request.POST.__getitem__('shopping_order_id')
+        order_id = request.POST.__getitem__('invoice')
 #        receiver_email = request.POST.__getitem('receiver_email')
 #        mc_gross = request.POST.__getitem('mc_gross')
         
