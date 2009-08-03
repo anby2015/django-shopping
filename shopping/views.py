@@ -157,8 +157,6 @@ def view_item_details(request, slug):
     except:
         pass
     
-   
-    
     return render_to_response('shopping/item_details.html', context, context_instance=RequestContext(request)) 
 
 
@@ -172,26 +170,29 @@ def handle_paypal_notify(request):
     order = None
     #TODO: post back to PayPal system to validate
     
-    #assign post variables
     if request.method == "POST":
+        #assign post variables
         payer_email = request.POST.__getitem__('payer_email')
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') 
-#        receiver_email = request.POST.__getitem('receiver_email')
-#        mc_gross = request.POST.__getitem('mc_gross')
+        receiver_email = request.POST.__getitem('receiver_email')
+        mc_gross = request.POST.__getitem('mc_gross')
         
         log += payer_email
         log += ' - '
         log += payment_status
         log += ' - '
         log += order_id
-#        log += "   //   "
-#        log += receiver_email
-#        log += "   //   "
-#        log += mc_gross
+        log += "   //   "
+        log += receiver_email
+        log += "   //   "
+        log += mc_gross
     
+        valid = True
         #Verify correct payment_status
         #Verify correct receiver email
+#        if receiver_email != settings.PAYPAL_ADDRESS:
+#            valid = False
         #Verify correct price
         #Verify correct  
         
