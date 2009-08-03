@@ -16,8 +16,9 @@
 			$("#update_cart").css("color", "#0085CF");
 		});
 		$("#empty_cart").bind("click", handleEmptyCart);
+		
 		//set the notify url for paypal
-		var notifyPath = $('#shopping_notify_url').attr("value");
+		var notifyPath = "{% url shopping-paypal-notify %}"
 		$('#shopping_notify_url').attr("value", getURL() + notifyPath);
 	});
 	
@@ -128,7 +129,7 @@
 			<input type="hidden" name="cmd" value="_cart">
 			<input type="hidden" name="upload" value="1">
 			<input type="hidden" name="business" value="{{business}}">
-			<input type="hidden" name="notify_url" id="shopping_notify_url" value="{% url shopping-paypal-notify %}">
+			<input type="hidden" name="notify_url" id="shopping_notify_url" value="">
 			<input type="hidden" name="lc" value="US">
 			<input type="hidden" name="currency_code" value="USD">
 			<input type="hidden" name="cn" value="Add special instructions if any">
