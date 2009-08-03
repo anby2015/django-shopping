@@ -175,8 +175,8 @@ def handle_paypal_notify(request):
         payer_email = request.POST.__getitem__('payer_email')
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') 
-        receiver_email = request.POST.__getitem('receiver_email')
-        mc_gross = request.POST.__getitem('mc_gross')
+        receiver_email = request.POST.__getitem__('receiver_email')
+        mc_gross = request.POST.__getitem__('mc_gross')
         
         log += payer_email
         log += ' - '
