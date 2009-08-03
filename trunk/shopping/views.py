@@ -168,6 +168,7 @@ def handle_paypal_notify(request):
     payer_email = ""
     payment_status = ""
     order = None
+    price = 0
     #TODO: post back to PayPal system to validate
     
     if request.method == "POST":
@@ -200,10 +201,10 @@ def handle_paypal_notify(request):
         valid = True
         #Verify correct payment_status
         #Verify correct receiver email
-        if receiver_email != settings.PAYPAL_ADDRESS:
-            valid = False
+#        if receiver_email != settings.PAYPAL_ADDRESS:
+#            valid = False
         # TODO: Verify correct price:  gross - (shipping + tax + handling)
-        price = mc_gross - mc_handling - mc_shipping - tax
+        price = (mc_gross - mc_handling - mc_shipping - tax)
         log += "   /Price:   "
         log += price
         
