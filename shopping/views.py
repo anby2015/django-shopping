@@ -199,24 +199,32 @@ def handle_paypal_notify(request):
         log += str(tax)
     
         valid = True
-        #Verify correct payment_status
+        order = Order.objects.get(id=order_id)
+        #TODO: Verify correct payment_status
+        
         #Verify correct receiver email
         if receiver_email != settings.PAYPAL_ADDRESS:
             valid = False
-        # TODO: Verify correct price:  gross - (shipping + tax + handling)
-        price = (mc_gross - mc_handling - mc_shipping - tax)
+            
+        #Verify correct price:  gross - (shipping + tax + handling)
+        subtotal = (mc_gross - mc_handling - mc_shipping - tax)
+        if subtotal != order.get_subtotal():
+            valid = False
+            
         log += "   /Price:   "
-        log += str(price)
+        log += str(subtotal)
         
         if valid:
+            log += "ORDER IS VALID"
             #set order to completed
-            order = Order.objects.get(id=order_id)
             order.status = 2
             order.save()
     
             #send emails?
             
             #update the page?
+        else:
+            pass #TODO log invalid attempts for manual inspection
     
     #log bad requests for manual inspection
     filename = "test-notify.txt"
