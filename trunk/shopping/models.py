@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 from fields import ManyToManyField_NoSyncdb
 import datetime
+from django.db.models import Sum
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
@@ -49,13 +50,20 @@ class Order(models.Model):
         	return 'Guest shopper on ' + str(self.date)
     
     def get_item_count(self):
-        from django.db.models import Sum
         print self.selection_set.all()
         count = self.selection_set.aggregate(Sum('quantity'))
         if count['quantity__sum'] == None:
             return 0
         else:
             return count['quantity__sum']
+        
+    def get_subtotal(self):
+#        subtotal = self.selection_set.all().aggregate(Sum('item__price'))
+        subtotal = 0
+        for selection in self.selection_set.all():
+            subtotal += (selection.item.price * selection.quantity)
+        return subtotal
+        
     
 class Selection(models.Model):
     item = models.ForeignKey('Item')
