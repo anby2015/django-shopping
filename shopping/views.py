@@ -174,12 +174,12 @@ def handle_paypal_notify(request):
     #assign post variables
     if request.method == "POST":
         payer_email = request.POST.__getitem__('payer_email')
-        payment_status = request.POST.__getitem('payment_status')
+        payment_status = request.POST.__getitem__('payment_status')
 #        receiver_email = request.POST.__getitem('receiver_email')
 #        mc_gross = request.POST.__getitem('mc_gross')
         
         log += payer_email
-        log += "   --   "
+        log += ''
         log += payment_status
 #        log += "   //   "
 #        log += receiver_email
