@@ -169,7 +169,7 @@ def handle_paypal_notify(request):
     log = "notification result: "
     payer_email = ""
     payment_status = ""
-    
+    order = None
     #TODO: post back to PayPal system to validate
     
     #assign post variables
