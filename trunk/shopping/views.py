@@ -176,10 +176,10 @@ def handle_paypal_notify(request):
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') 
         receiver_email = request.POST.__getitem__('receiver_email')
-        mc_gross = request.POST.__getitem__('mc_gross')
-        mc_handling = request.POST.__getitem__('mc_handling')
-        mc_shipping = request.POST.__getitem__('mc_shipping')
-        tax = request.POST.__getitem__('tax')
+        mc_gross = float(request.POST.__getitem__('mc_gross'))
+        mc_handling = float(request.POST.__getitem__('mc_handling'))
+        mc_shipping = float(request.POST.__getitem__('mc_shipping'))
+        tax = float(request.POST.__getitem__('tax'))
         
         log += payer_email
         log += ' - '
@@ -202,8 +202,10 @@ def handle_paypal_notify(request):
         #Verify correct receiver email
         if receiver_email != settings.PAYPAL_ADDRESS:
             valid = False
-        #Verify correct price:  gross - (shipping + tax + handling)
-        
+        # TODO: Verify correct price:  gross - (shipping + tax + handling)
+        price = mc_gross - mc_handling - mc_shipping - tax
+        log += "   /Price:   "
+        log += price
         
         if valid:
             #set order to completed
