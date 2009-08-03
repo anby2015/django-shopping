@@ -177,6 +177,9 @@ def handle_paypal_notify(request):
         order_id = request.POST.__getitem__('custom') 
         receiver_email = request.POST.__getitem__('receiver_email')
         mc_gross = request.POST.__getitem__('mc_gross')
+        mc_handling = request.POST.__getitem__('mc_handling')
+        mc_shipping = request.POST.__getitem__('mc_shipping')
+        tax = request.POST.__getitem__('tax')
         
         log += payer_email
         log += ' - '
@@ -187,23 +190,30 @@ def handle_paypal_notify(request):
         log += receiver_email
         log += "   //   "
         log += mc_gross
+        log += "   //   "
+        log += mc_handling
+        log += "   //   "
+        log += mc_shipping
+        log += "   //   "
+        log += tax
     
         valid = True
         #Verify correct payment_status
         #Verify correct receiver email
-#        if receiver_email != settings.PAYPAL_ADDRESS:
-#            valid = False
-        #Verify correct price
-        #Verify correct  
+        if receiver_email != settings.PAYPAL_ADDRESS:
+            valid = False
+        #Verify correct price:  gross - (shipping + tax + handling)
         
-        #set order to completed
-        order = Order.objects.get(id=order_id)
-        order.status = 2
-        order.save()
+        
+        if valid:
+            #set order to completed
+            order = Order.objects.get(id=order_id)
+            order.status = 2
+            order.save()
     
-        #send emails?
-        
-        #update the page?
+            #send emails?
+            
+            #update the page?
     
     #log bad requests for manual inspection
     filename = "test-notify.txt"
