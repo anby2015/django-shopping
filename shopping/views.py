@@ -11,6 +11,7 @@ from django.utils import simplejson
 from shopping import shopping_utils
 import urllib
 import urllib2
+import datetime
 
 def display_items(request):
     context = {}
@@ -199,6 +200,17 @@ def handle_paypal_notify(request):
         log += str(tax)
     
         valid = True
+        
+        #TODO: Verify with paypal
+        data = dict(request.POST.items())
+        args = {'cmd': '_notify-validate'}
+        args.update(data)
+        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+        response = urllib.urlopen(url, urllib.urlencode(args)).read()
+        log += "   //  VERIFIED:  "
+        log += response
+
+        
         order = Order.objects.get(id=order_id)
         #TODO: Verify correct payment_status
         
@@ -219,6 +231,8 @@ def handle_paypal_notify(request):
             #set order to completed
             order.status = 2
             order.save()
+            #set date to today
+            order.date = datetime.date.today()
     
             #send emails?
             
