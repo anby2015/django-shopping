@@ -110,12 +110,10 @@
 		{% for selection in order.selection_set.all %}
 			{% ifnotequal selection.quantity 0 %}
 			<div class="shopping_item_bar_checkout">
-				<span class="shopping_item_name">{{selection.item.name}}
+				<span class="shopping_item_name"><a href="{% url shopping-item selection.item.name_slug %}">{{selection.item.name}}</a>
 					{% ifnotequal selection.item_variations.count 0 %}
 						<span class="shopping_item_description">
-						({% for variation in selection.item_variations.all %}
-							{{variation.variation_value}} 
-						{% endfor %})</span>
+						{{selection.display_variations}}</span>
 					{% endifnotequal %}
 				</span>
 				<span class="shopping_item_price">${{selection.item.price}} x</span> 
@@ -139,7 +137,7 @@
 			<span id="paypal_selections">
 			{% for selection in order.selection_set.all %}
 				{% ifnotequal selection.quantity 0 %}
-				<input type="hidden" name="item_name_{{forloop.counter}}" value="{{selection.item.name}}">
+				<input type="hidden" name="item_name_{{forloop.counter}}" value="{{selection.item.name}} {{selection.display_variations}}">
 				<input type="hidden" name="amount_{{forloop.counter}}" value="{{selection.item.price}}">
 				<input type="hidden" id="{{selection.id}}" name="quantity_{{forloop.counter}}" value="{{selection.quantity}}">
 				{% endifnotequal %}
