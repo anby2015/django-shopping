@@ -74,6 +74,17 @@ class Selection(models.Model):
     def __unicode__(self):
         return self.item.name + ' x ' + str(self.quantity)
     
+    def display_variations(self):
+        response = '( '
+        if len(self.item_variations.all()) > 0:
+            for variation in self.item_variations.all():
+                response += ' '
+                response += str(variation.variation_value)
+            response += ' )'
+            return response
+        else:
+            return ''
+    
 
 class VariationCategory(models.Model):
     name = models.CharField(max_length=100)
