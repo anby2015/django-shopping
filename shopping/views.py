@@ -181,6 +181,7 @@ def handle_paypal_notify(request):
         mc_handling = float(request.POST.__getitem__('mc_handling'))
         mc_shipping = float(request.POST.__getitem__('mc_shipping'))
         tax = float(request.POST.__getitem__('tax'))
+        order = Order.objects.get(id=order_id)
         
         log +=' Payer Email: '
         log += payer_email
@@ -201,18 +202,18 @@ def handle_paypal_notify(request):
     
         valid = True
         
+        
         #Verify transaction with paypal
         data = dict(request.POST.items())
         args = {'cmd': '_notify-validate'}
         args.update(data)
         verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
         response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
-        log += "\n  VERIFIED: "
+        log += "\n VERIFIED: "
         log += str(response)
         if str(response) != 'VERIFIED':
             valid = False 
         
-        order = Order.objects.get(id=order_id)
         #TODO: Verify correct payment_status
         
         #Verify correct receiver email
@@ -223,17 +224,15 @@ def handle_paypal_notify(request):
         subtotal = (mc_gross - mc_handling - mc_shipping - tax)
         if subtotal != order.get_subtotal():
             valid = False
-            
         log += "\n Price: "
         log += str(subtotal)
         
         if valid:
-            #internally process the order
-            order_succeeded(order)
+            order_succeeded(order) #internally process the order
         else:
             pass #TODO log invalid attempts for manual inspection
     
-    #log bad requests for manual inspection
+    #log transactions for manual inspection
     filename = "transaction-log.txt"
     file = open(filename, 'a')
     file.write(log)
