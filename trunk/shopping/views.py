@@ -208,7 +208,7 @@ def handle_paypal_notify(request):
         verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
         response = urllib.urlopen(url, urllib.urlencode(args)).read()
         log += "   //  VERIFIED:  "
-        log += response
+        log += str(response)
 
         
         order = Order.objects.get(id=order_id)
