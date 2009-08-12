@@ -201,7 +201,7 @@ def handle_paypal_notify(request):
     
         valid = True
         
-        #TODO: Verify with paypal
+        #Verify transaction with paypal
         data = dict(request.POST.items())
         args = {'cmd': '_notify-validate'}
         args.update(data)
@@ -209,7 +209,8 @@ def handle_paypal_notify(request):
         response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
         log += "   //  VERIFIED:  "
         log += str(response)
-
+        if str(response) != 'VERIFIED':
+            valid = False 
         
         order = Order.objects.get(id=order_id)
         #TODO: Verify correct payment_status
