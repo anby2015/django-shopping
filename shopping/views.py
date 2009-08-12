@@ -228,16 +228,8 @@ def handle_paypal_notify(request):
 #        log += str(subtotal)
         
         if valid:
-#            log += "ORDER IS VALID"
-            #set order to completed
-            order.status = 2
-            order.save()
-            #set date to today
-            order.date = datetime.date.today()
-    
-            #send emails?
-            
-            #update the page?
+            #internally process the order
+            order_succeeded(order)
         else:
             pass #TODO log invalid attempts for manual inspection
     
@@ -247,5 +239,14 @@ def handle_paypal_notify(request):
 #    file.write(log)
 #    file.close()
     return HttpResponse('')
+
+def order_succeeded(self, order):
+    #set order to completed
+    order.status = 2
+    order.save()
+    #set date to today
+    order.date = datetime.date.today()
+    #send emails?
+    #update the page?
     
     
