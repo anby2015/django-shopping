@@ -229,10 +229,7 @@ def handle_paypal_notify(request):
         
         if valid:
             #internally process the order
-#            order_succeeded(order)
-            order.status = 2
-            order.date = datetime.date.today()
-            order.save()
+            order_succeeded(order)
         else:
             pass #TODO log invalid attempts for manual inspection
     
@@ -243,12 +240,12 @@ def handle_paypal_notify(request):
 #    file.close()
     return HttpResponse('')
 
-def order_succeeded(self, order):
+def order_succeeded(order):
     #set order to completed
     order.status = 2
-    order.save()
-    #set date to today
     order.date = datetime.date.today()
+    order.save()
+    
     #send emails?
     #update the page?
     
