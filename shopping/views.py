@@ -164,8 +164,7 @@ def view_item_details(request, slug):
 #This method gets called when an order is purchased or refunded. Paypal does a POST callback
 def handle_paypal_notify(request):
     #get order info
-    print '---------processing paypal IPN-----------'
-    log = "notification result: "
+    log = "\n\n ---------Paypal notification result---------- \n"
     payer_email = ""
     payment_status = ""
     order = None
@@ -183,20 +182,21 @@ def handle_paypal_notify(request):
         mc_shipping = float(request.POST.__getitem__('mc_shipping'))
         tax = float(request.POST.__getitem__('tax'))
         
+        log +=' Payer Email: '
         log += payer_email
-        log += ' - '
+        log += ' \n Payment Status: '
         log += payment_status
-        log += ' - '
+        log += " \n Order ID: " 
         log += order_id
-        log += "   //   "
+        log += "\n Receiver Email: "
         log += receiver_email
-        log += "   //   "
+        log += "\n Gross: "
         log += str(mc_gross)
-        log += "   //   "
+        log += "\n Handling: "
         log += str(mc_handling)
-        log += "   //   "
+        log += "\n Shipping: "
         log += str(mc_shipping)
-        log += "   //   "
+        log += "\n Tax: "
         log += str(tax)
     
         valid = True
@@ -207,7 +207,7 @@ def handle_paypal_notify(request):
         args.update(data)
         verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
         response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
-        log += "   //  VERIFIED:  "
+        log += "\n  VERIFIED: "
         log += str(response)
         if str(response) != 'VERIFIED':
             valid = False 
@@ -224,7 +224,7 @@ def handle_paypal_notify(request):
         if subtotal != order.get_subtotal():
             valid = False
             
-        log += "   /Price:   "
+        log += "\n Price: "
         log += str(subtotal)
         
         if valid:
@@ -235,7 +235,7 @@ def handle_paypal_notify(request):
     
     #log bad requests for manual inspection
     filename = "transaction-log.txt"
-    file = open(filename, 'w')
+    file = open(filename, 'a')
     file.write(log)
     file.close()
     return HttpResponse('')
