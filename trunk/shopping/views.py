@@ -165,7 +165,7 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     #get order info
     print '---------processing paypal IPN-----------'
-#    log = "notification result: "
+    log = "notification result: "
     payer_email = ""
     payment_status = ""
     order = None
