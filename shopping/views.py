@@ -203,9 +203,9 @@ def handle_paypal_notify(request):
         
         #TODO: Verify with paypal
         data = dict(request.POST.items())
-#        args = {'cmd': '_notify-validate'}
-#        args.update(data)
-#        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+        args = {'cmd': '_notify-validate'}
+        args.update(data)
+        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
 #        response = urllib.urlopen(url, urllib.urlencode(args)).read()
         log += "   //  VERIFIED:  "
 #        log += str(response)
