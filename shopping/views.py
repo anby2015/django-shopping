@@ -165,7 +165,7 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     #get order info
     print '---------processing paypal IPN-----------'
-    log = "notification result: "
+#    log = "notification result: "
     payer_email = ""
     payment_status = ""
     order = None
@@ -183,21 +183,21 @@ def handle_paypal_notify(request):
         mc_shipping = float(request.POST.__getitem__('mc_shipping'))
         tax = float(request.POST.__getitem__('tax'))
         
-        log += payer_email
-        log += ' - '
-        log += payment_status
-        log += ' - '
-        log += order_id
-        log += "   //   "
-        log += receiver_email
-        log += "   //   "
-        log += str(mc_gross)
-        log += "   //   "
-        log += str(mc_handling)
-        log += "   //   "
-        log += str(mc_shipping)
-        log += "   //   "
-        log += str(tax)
+#        log += payer_email
+#        log += ' - '
+#        log += payment_status
+#        log += ' - '
+#        log += order_id
+#        log += "   //   "
+#        log += receiver_email
+#        log += "   //   "
+#        log += str(mc_gross)
+#        log += "   //   "
+#        log += str(mc_handling)
+#        log += "   //   "
+#        log += str(mc_shipping)
+#        log += "   //   "
+#        log += str(tax)
     
         valid = True
         
@@ -207,8 +207,8 @@ def handle_paypal_notify(request):
         args.update(data)
         verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
         response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
-        log += "   //  VERIFIED:  "
-        log += str(response)
+#        log += "   //  VERIFIED:  "
+#        log += str(response)
         if str(response) != 'VERIFIED':
             valid = False 
         
@@ -224,11 +224,11 @@ def handle_paypal_notify(request):
         if subtotal != order.get_subtotal():
             valid = False
             
-        log += "   /Price:   "
-        log += str(subtotal)
+#        log += "   /Price:   "
+#        log += str(subtotal)
         
         if valid:
-            log += "ORDER IS VALID"
+#            log += "ORDER IS VALID"
             #set order to completed
             order.status = 2
             order.save()
@@ -242,10 +242,10 @@ def handle_paypal_notify(request):
             pass #TODO log invalid attempts for manual inspection
     
     #log bad requests for manual inspection
-    filename = "test-notify.txt"
-    file = open(filename, 'w')
-    file.write(log)
-    file.close()
-    return HttpResponse(log)
+#    filename = "invalid-transactions.txt"
+#    file = open(filename, 'w')
+#    file.write(log)
+#    file.close()
+    return HttpResponse('')
     
     
