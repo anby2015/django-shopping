@@ -168,4 +168,10 @@ class ViewTest(TestCase):
         
         self.assertEquals(order.get_item_count(), 0, 'order should be empty')
         
+    def test_order_succeeed(self):
+        ''' Test that emails are sent properly'''
+        from shopping.models import Order
+        from shopping.views import order_succeeded
+        order = Order.objects.create()
+        response = order_succeeded(order)
         

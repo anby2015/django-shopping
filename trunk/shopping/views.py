@@ -241,11 +241,33 @@ def handle_paypal_notify(request):
 
 def order_succeeded(order):
     #set order to completed
-    order.status = 2
-    order.date = datetime.date.today()
-    order.save()
+#    order.status = 2
+#    order.date = datetime.date.today()
+#    order.save()
     
-    #send emails?
+    #send email notifications
+    from django.core.mail import EmailMultiAlternatives
+    subject, from_email, to = 'Order Confirmation', settings.PAYPAL_ADDRESS, 'davidcgeddes@gmail.com'
+#    text_content = 'This is an important message.'
+#    html_content = '<p>This is an <strong>important</strong> message.</p>'
+    
+    #load the email template
+    from django.template import loader
+    from django.template import Context
+    t = loader.get_template('shopping/email.html')
+    html_content = t.render(Context({'order': order}))
+    text_content = t.render(Context({'order': order}))
+    
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+    
+    
+#    from django.core.mail import send_mail
+#    send_mail('Thank you for your order', 'Here is the message.', 'tavacischool@gmail.com',
+#    ['davidcgeddes@gmail.com'], fail_silently=False)
+
     #update the page?
     
     
