@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import simplejson
+from django.core import mail
 
 class ViewTest(TestCase):
     fixtures = ['tests/auth.json', 'tests/shopping.json', 'tests/magictags.json']
@@ -174,4 +175,7 @@ class ViewTest(TestCase):
         from shopping.views import order_succeeded
         order = Order.objects.create()
         response = order_succeeded(order)
+        # Test that one message has been sent.
+        self.assertEquals(len(mail.outbox), 1)
+
         
