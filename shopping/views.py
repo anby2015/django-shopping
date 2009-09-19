@@ -225,18 +225,21 @@ def handle_paypal_notify(request):
         log += "\n VERIFIED: "
         log += str(response)
         if str(response) != 'VERIFIED':
-            valid = False 
+            valid = False
+            log += "\n Failed because paypal verification was not VERIFIED" 
         
         #TODO: Verify correct payment_status
         
         #Verify correct receiver email
         if receiver_email != settings.PAYPAL_ADDRESS:
             valid = False
+            log += "\n Failed because receiver email and paypal_address in settings were different"
             
         #Verify correct price:  gross - (shipping + tax + handling)
         subtotal = (mc_gross - mc_handling - mc_shipping - tax)
         if subtotal != order.get_subtotal():
             valid = False
+            log += "\n Failed because subtotal returned was different"
         log += "\n Price: "
         log += str(subtotal)
         
@@ -244,7 +247,7 @@ def handle_paypal_notify(request):
             log += "\n ORDER VALID"
             order_succeeded(order) #internally process the order
         else:
-            log += "\n ORDER INVALID"
+            log += "\n ORDER INVALID!"
             #TODO log invalid attempts for manual inspection
     
     #log transactions for manual inspection
