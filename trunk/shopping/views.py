@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.utils import simplejson
 from shopping import shopping_utils
+from magictags.models import Tag
 import urllib
 import urllib2
 import datetime
@@ -24,6 +25,8 @@ def display_items_by_tag(request, tag_slug):
     context = {}
     items = Item.objects.filter(tags__slug__contains=tag_slug).distinct()
     context['items'] = items
+    tag_name = Tag.objects.get(slug=tag_slug)
+    context['tag_name'] = tag_name
     return render_to_response('shopping/item_list.html', context, context_instance=RequestContext(request))
 
 def empty_cart(request):
@@ -51,7 +54,10 @@ def update_cart(request):
     """This method is called when user changes selection quantities on the view cart page, when user clicks 'update cart' or before final checkout.
        key value pair is selection id, selection quantity """
     if request.method == "POST":
-        xml = '<?xml version="1.0"?><selections>'
+        order = shopping_utils.get_order(request)
+        xml = '<?xml version="1.0"?><response>'
+        #get the selections
+        xml += '<selections>'
         for selection_update in request.POST.items():
             #get the params
             id = selection_update[0]
@@ -60,11 +66,17 @@ def update_cart(request):
             selection = Selection.objects.get(id=id)
             selection.quantity = quantity
             selection.save()
+            
             #add an xml row to the response
             xml += '<selection><id>%s</id><quantity>%s</quantity></selection>' % (selection.id, selection.quantity)
         xml += '</selections>'
+        #also return the new item count and new subtotal
+        new_total_count = shopping_utils.get_order(request).get_item_count()
+        xml += '<itemcount>' + str(new_total_count) + '</itemcount>'
+        new_subtotal = order.get_subtotal()
+        xml += '<subtotal>' + str(new_subtotal) + '</subtotal>'
+        xml += '</response>'
         return HttpResponse(xml)
-
     
 def add_to_cart(request):
     '''Add an item to the shopping cart'''
@@ -142,6 +154,7 @@ def add_to_cart(request):
         response['item_count'] = order.get_item_count()
         responseJSON = simplejson.dumps(response)
         return HttpResponse(responseJSON)
+
 
 def view_item_details(request, slug):
     context = {}
@@ -228,9 +241,11 @@ def handle_paypal_notify(request):
         log += str(subtotal)
         
         if valid:
+            log += "\n ORDER VALID"
             order_succeeded(order) #internally process the order
         else:
-            pass #TODO log invalid attempts for manual inspection
+            log += "\n ORDER INVALID"
+            #TODO log invalid attempts for manual inspection
     
     #log transactions for manual inspection
     filename = "transaction-log.txt"
@@ -241,15 +256,14 @@ def handle_paypal_notify(request):
 
 def order_succeeded(order):
     #set order to completed
-#    order.status = 2
-#    order.date = datetime.date.today()
-#    order.save()
+    order.status = 2
+    order.date = datetime.date.today()
+    order.save()
     
     #send email notifications
     from django.core.mail import EmailMultiAlternatives
+    #TODO: needs to go to the shopper instead of davidcgeddes@gmail.com
     subject, from_email, to = 'Order Confirmation', settings.PAYPAL_ADDRESS, 'davidcgeddes@gmail.com'
-#    text_content = 'This is an important message.'
-#    html_content = '<p>This is an <strong>important</strong> message.</p>'
     
     #load the email template
     from django.template import loader
@@ -267,5 +281,12 @@ def order_succeeded(order):
 #    ['davidcgeddes@gmail.com'], fail_silently=False)
 
     #update the page?
+    
+def get_paypal_form(request):
+    '''this gets called anytime the viewcart page gets updated, to keep the paypal form in sync'''
+    context = {}
+    context['order'] = shopping_utils.get_order(request)
+    context['business'] = settings.PAYPAL_ADDRESS
+    return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request)) 
     
     
