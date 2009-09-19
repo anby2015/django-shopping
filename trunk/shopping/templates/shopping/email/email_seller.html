@@ -1,0 +1,13 @@
+<h1>Order Received</h1>
+<img src="{{MEDIA_URL}}shopping/images/logo.jpg"/>
+<p>You have received a new order. See paypal email for all details.</p>
+<p>Order ID: {{order.id}}</p>
+<p>Selections:</p>
+<ol>
+{% for selection in order.selection_set.all %}
+	<li>{{selection}}</li>
+{% endfor %}
+</ol>
+<p>Subtotal: {{order.get_subtotal}}</p>
+<p>Total: {{total}}</p>
+<p>See the corresponding paypal email for the full transaction information, including buyer's shipping address.</p>
