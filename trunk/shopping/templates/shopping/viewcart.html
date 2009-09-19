@@ -42,6 +42,9 @@
 			e.preventDefault();
 			updateCart(e, true);
 		}
+		else{
+			timedRefresh(12000);
+		}
 	}
 	
 	function updateCart(e, andCheckout){
@@ -99,13 +102,18 @@
 		var url = protocol + '//' + domain;
 		return url;	
 	}
-	
+
+	function timedRefresh(timeoutPeriod) {
+		setTimeout("location.reload(true);",timeoutPeriod);
+	}
+
 	function updatePaypalCheckoutForm(response, andCheckout){
 		var newFormHtml = '';
 		$.get("{% url shopping-paypal-form %}", function(response){
 			$('#paypalcheckout').replaceWith(response);
 			//proceed to checkout if checkout was what caused the update call
 			if (andCheckout == true){
+				timedRefresh(12000);
 				$("#paypal_submit").trigger("click");
 			}
 		});
