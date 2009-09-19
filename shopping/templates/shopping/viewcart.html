@@ -7,7 +7,7 @@
 	var cartSelectionChanged = false;
 	$(document).ready(function(){
 		$("#update_cart").bind("click", updateCart);
-		$("#paypal_submit").bind("click", handlePaypalClick);
+		$("#paypal_submit").live("click", handlePaypalClick);
 		$("#selections input").bind("click", function(){
 			cartSelectionChanged = true;
 		});
@@ -42,7 +42,6 @@
 			e.preventDefault();
 			updateCart(e, true);
 		}
-		
 	}
 	
 	function updateCart(e, andCheckout){
@@ -57,28 +56,39 @@
 		
 		$.post("{% url shopping-update %}", selectionsSerialized, function(xml){
 			cartSelectionChanged = false;
-			updatePaypalCheckoutForm(xml);
-			if (andCheckout == true){
-				$("#paypal_submit").trigger("click");
-			}
+			//grab a new copy of the paypal form template.
+			updatePaypalCheckoutForm(xml, andCheckout);
+			
+			//update the total item count
+			var new_count = jQuery(xml).find('itemcount').text();
+			$("#cart_item_count").html(new_count);
+			
+			//update the price subtotal
+			var new_price = '$' 
+			new_price += jQuery(xml).find('subtotal').text();
+			$("#shopping_subtotal").html(new_price);
+			
 			//inform the user of success
+			$("#update_cart").css("color", "#A5A5A5");//change 'update cart' color back from blue
 			$("#cart_updated_notice").slideDown("fast")
 			setTimeout(
 				'$("#cart_updated_notice").slideUp("fast");',
 				3000
 			);
+			
+			//remove any selection rows on the page that have quantity of zero
+			$('span.shopping_selection_quantity input').each(function(){
+				var quantity = $(this).attr("value");
+				if (quantity == 0){
+					var selectionElem = $(this).parent().parent();
+					$(selectionElem).fadeOut('medium', function(){
+						//when done fading remove from done
+						$(selectionElem).remove();
+					});
+				}
+			});
 		},
 		"XML");
-	}
-	
-	function updatePaypalCheckoutForm(xml){
-		var newFormHtml = '';
-		$(xml).find("selection").each(function(){
-			var selection = $(this);
-			var id = $(selection).find('id').text();
-			var quantity = $(selection).find('quantity').text();
-			$('#paypal_selections input#'+id+'').attr("value", quantity);
-		});
 	}
 	
 	function getURL(){
@@ -90,6 +100,16 @@
 		return url;	
 	}
 	
+	function updatePaypalCheckoutForm(response, andCheckout){
+		var newFormHtml = '';
+		$.get("{% url shopping-paypal-form %}", function(response){
+			$('#paypalcheckout').replaceWith(response);
+			//proceed to checkout if checkout was what caused the update call
+			if (andCheckout == true){
+				$("#paypal_submit").trigger("click");
+			}
+		});
+	}
 	</script>
 {% endblock extrahead %}
 
@@ -123,28 +143,11 @@
 		{% endfor %}
 		</div>
 		
-		<span>${{order.get_subtotal}}</span>
+		<span id="shopping_subtotal">${{order.get_subtotal}}</span>
 		
-		<form target="paypal" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" id="paypalcheckout">
-			<input type="hidden" name="cmd" value="_cart">
-			<input type="hidden" name="upload" value="1">
-			<input type="hidden" name="business" value="{{business}}">
-			<input type="hidden" name="notify_url" id="shopping_notify_url" value="">
-			<input type="hidden" name="custom" value="{{order.id}}">
-			<input type="hidden" name="lc" value="US">
-			<input type="hidden" name="currency_code" value="USD">
-			<input type="hidden" name="cn" value="Add special instructions if any">
-			<span id="paypal_selections">
-			{% for selection in order.selection_set.all %}
-				{% ifnotequal selection.quantity 0 %}
-				<input type="hidden" name="item_name_{{forloop.counter}}" value="{{selection.item.name}} {{selection.display_variations}}">
-				<input type="hidden" name="amount_{{forloop.counter}}" value="{{selection.item.price}}">
-				<input type="hidden" id="{{selection.id}}" name="quantity_{{forloop.counter}}" value="{{selection.quantity}}">
-				{% endifnotequal %}
-			{% endfor %}
-			</span>
-			<input id="paypal_submit" class="shopping_checkout" type="image" src="{{MEDIA_URL}}shopping/images/paypal_checkout.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-		</form>
+		<!--include Palpal form template. -->
+		{% include "shopping/paypal_form.html" %}
+		
 	{% endifequal %}	
 	
 	</div>
