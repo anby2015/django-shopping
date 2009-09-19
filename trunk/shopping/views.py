@@ -186,8 +186,7 @@ def handle_paypal_notify(request):
     #TODO: post back to PayPal system to validate
     
     if request.method == "POST":
-        #assign post variables
-        payer_email = request.POST.__getitem__('payer_email')
+        #get order info
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') 
         receiver_email = request.POST.__getitem__('receiver_email')
@@ -195,8 +194,22 @@ def handle_paypal_notify(request):
         mc_handling = float(request.POST.__getitem__('mc_handling'))
         mc_shipping = float(request.POST.__getitem__('mc_shipping'))
         tax = float(request.POST.__getitem__('tax'))
+        
+        #get shopper info
+        payer_email = request.POST.__getitem__('payer_email')
+        first_name = request.POST.__getitem__('first_name')
+        last_name = request.POST.__getitem__('last_name')
+        payer_business_name = request.POST.__getitem__('payer_business_name')
+        address_street = request.POST.__getitem__('address_street')
+        address_city = request.POST.__getitem__('address_city')
+        address_state = request.POST.__getitem__('address_state')
+        address_country = request.POST.__getitem__('address_country')
+        contact_phone = request.POST.__getitem__('contact_phone')
+        
+        #find the order in the system
         order = Order.objects.get(id=order_id)
         
+        #log order details
         log +=' Payer Email: '
         log += payer_email
         log += ' \n Payment Status: '
@@ -248,7 +261,22 @@ def handle_paypal_notify(request):
         
         if valid:
             log += "\n ORDER VALID"
-            order_succeeded(order, mc_gross, payer_email) #internally process the order
+            #internally process the order
+            order_succeeded(order)
+            #prepare the emails to be sent
+            #buyer email content
+            from django.template import loader
+            from django.template import Context
+            t = loader.get_template('shopping/email/email_buyer.html')
+            buyer_email_content = t.render(Context({'order': order, 'total':total}))
+            
+            #seller email content
+            from django.template import loader
+            from django.template import Context
+            t = loader.get_template('shopping/email/email_seller.html')
+            seller_email_content = t.render(Context({'order': order, 'total':total}))
+            
+            notify_by_email(buyer_email_content, seller_email_content)
         else:
             log += "\n ORDER INVALID!"
          
@@ -259,39 +287,27 @@ def handle_paypal_notify(request):
     file.close()
     return HttpResponse('')
 
-def order_succeeded(order, total, payer_email):
+def order_succeeded(order):
     #set order to completed
     order.status = 2
     order.date = datetime.date.today()
     order.save()
     
-    #send email notifications
+def notify_by_email(buyer_email_content, seller_email_content):
+    '''send email notifications to the buyer and the seller(s)'''
     from django.core.mail import EmailMultiAlternatives
-    #TODO: needs to go to the shopper instead of davidcgeddes@gmail.com
-    subject, from_email, to = 'Order Confirmation', settings.PAYPAL_ADDRESS, "davidcgeddes@gmail.com"
+    from_email = settings.PAYPAL_ADDRESS
     
-    #Email the buyer
-    from django.template import loader
-    from django.template import Context
-    t = loader.get_template('shopping/email/email_buyer.html')
-    html_content = t.render(Context({'order': order, 'total':total}))
-    text_content = t.render(Context({'order': order, 'total':total}))
-    
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    msg.attach_alternative(html_content, "text/html")
+    #email the buyer 
+    msg = EmailMultiAlternatives('Order Confirmation', buyer_email_content, from_email, [payer_email])
+    msg.attach_alternative(buyer_email_content, "text/html")
+    msg.send()
+   
+    #email the seller(s)
+    msg = EmailMultiAlternatives('Order Received', seller_email_content, from_email, settings.STORE_OWNERS)
+    msg.attach_alternative(seller_email_content, "text/html")
     msg.send()
     
-     #Email the seller
-    from django.template import loader
-    from django.template import Context
-    t = loader.get_template('shopping/email/email_seller.html')
-    html_content = t.render(Context({'order': order, 'total':total}))
-    text_content = t.render(Context({'order': order, 'total':total}))
-    
-    msg = EmailMultiAlternatives('Order Received', text_content, from_email, settings.STORE_OWNERS)
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
-
     
 def get_paypal_form(request):
     '''this gets called anytime the viewcart page gets updated, to keep the paypal form in sync'''
