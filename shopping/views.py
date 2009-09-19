@@ -237,9 +237,11 @@ def handle_paypal_notify(request):
             
         #Verify correct price:  gross - (shipping + tax + handling)
         subtotal = (mc_gross - mc_handling - mc_shipping - tax)
-        if subtotal != str(order.get_subtotal()):
+        if str(subtotal) != str(order.get_subtotal()):
             valid = False
-            log += "\n Failed because subtotal returned was different"
+            log += "\n Failed because subtotal returned was different. "
+            log += "\n Required: " + str(order.get_subtotal())
+            log += "\n Actual: " + str(subtotal)
         log += "\n Subtotal: "
         log += str(subtotal)
         
