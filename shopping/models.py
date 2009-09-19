@@ -8,7 +8,7 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     name_slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    #content...
+    content = models.TextField(blank=True)
     price = models.FloatField()
     active = models.BooleanField(default=True)
     tags = ManyToManyField_NoSyncdb('magictags.Tag', db_table='magictags_tag_items', blank=True, null=True, help_text='Assign Tags to this item for easy filtering when shopping')
@@ -60,9 +60,17 @@ class Order(models.Model):
     def get_subtotal(self):
 #        subtotal = self.selection_set.all().aggregate(Sum('item__price'))
         subtotal = 0
+        from django.template.defaultfilters import floatformat
         for selection in self.selection_set.all():
             subtotal += (selection.item.price * selection.quantity)
-        return subtotal
+        return floatformat(subtotal,2)
+    
+    def get_selections(self):
+        selections = []
+        for selection in self.selection_set.all():
+            if selection.quantity > 0:
+                selections.append(selection)
+        return selections
         
     
 class Selection(models.Model):
