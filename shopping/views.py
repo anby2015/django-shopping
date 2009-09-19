@@ -13,6 +13,8 @@ from magictags.models import Tag
 import urllib
 import urllib2
 import datetime
+from django.template import loader
+from django.template import Context
 
 def display_items(request):
     context = {}
@@ -263,18 +265,15 @@ def handle_paypal_notify(request):
             log += "\n ORDER VALID"
             #internally process the order
             order_succeeded(order)
-            #prepare the emails to be sent
-            #buyer email content
-            from django.template import loader
-            from django.template import Context
+            
+            #prepare the email content to the buyer
             t = loader.get_template('shopping/email/email_buyer.html')
             buyer_email_content = t.render(Context({'order': order, 'total':total}))
             
-            #seller email content
-            from django.template import loader
-            from django.template import Context
+            #prepare the email content to the seller
             t = loader.get_template('shopping/email/email_seller.html')
             seller_email_content = t.render(Context({'order': order, 'total':total}))
+            log += "\n email content prepared"
             
             notify_by_email(buyer_email_content, seller_email_content)
         else:
