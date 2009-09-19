@@ -208,32 +208,32 @@ def handle_paypal_notify(request):
             address_state = request.POST.__getitem__('address_state')
             address_country = request.POST.__getitem__('address_country')
             contact_phone = request.POST.__getitem__('contact_phone')
+            #error
         except:
             pass
         
         #find the order in the system
         order = Order.objects.get(id=order_id)
-        #error
         
-#        #log order details
-#        log +='\n Payer Email: '
-#        log += payer_email
-#        log += ' \n Payment Status: '
-#        log += payment_status
-#        log += " \n Order ID: " 
-#        log += order_id
-#        log += "\n Receiver Email: "
-#        log += receiver_email
-#        log += "\n Gross: "
-#        log += str(mc_gross)
-#        log += "\n Handling: "
-#        log += str(mc_handling)
-#        log += "\n Shipping: "
-#        log += str(mc_shipping)
-#        log += "\n Tax: "
-#        log += str(tax)
+        #log order details
+        log +='\n Payer Email: '
+        log += payer_email
+        log += ' \n Payment Status: '
+        log += payment_status
+        log += " \n Order ID: " 
+        log += order_id
+        log += "\n Receiver Email: "
+        log += receiver_email
+        log += "\n Gross: "
+        log += str(mc_gross)
+        log += "\n Handling: "
+        log += str(mc_handling)
+        log += "\n Shipping: "
+        log += str(mc_shipping)
+        log += "\n Tax: "
+        log += str(tax)
     
-#        valid = True
+        valid = True
 #        
 #        #Verify transaction with paypal
 #        data = dict(request.POST.items())
