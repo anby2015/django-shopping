@@ -187,27 +187,29 @@ def handle_paypal_notify(request):
     price = 0
     
     if request.method == "POST":
-        #get order info
-        payment_status = request.POST.__getitem__('payment_status')
-        order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
-        receiver_email = request.POST.__getitem__('receiver_email')
-        mc_gross = float(request.POST.__getitem__('mc_gross'))
-        mc_handling = float(request.POST.__getitem__('mc_handling'))
-        mc_shipping = float(request.POST.__getitem__('mc_shipping'))
-        tax = float(request.POST.__getitem__('tax'))
-        
-        
-        #get shopper info
-        payer_email = request.POST.__getitem__('payer_email')
-        first_name = request.POST.__getitem__('first_name')
-        #error
-        last_name = request.POST.__getitem__('last_name')
-#        payer_business_name = request.POST.__getitem__('payer_business_name')
-        address_street = request.POST.__getitem__('address_street')
-        address_city = request.POST.__getitem__('address_city')
-        address_state = request.POST.__getitem__('address_state')
-        address_country = request.POST.__getitem__('address_country')
-        contact_phone = request.POST.__getitem__('contact_phone')
+        try:
+            #get order info
+            payment_status = request.POST.__getitem__('payment_status')
+            order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
+            receiver_email = request.POST.__getitem__('receiver_email')
+            mc_gross = float(request.POST.__getitem__('mc_gross'))
+            mc_handling = float(request.POST.__getitem__('mc_handling'))
+            mc_shipping = float(request.POST.__getitem__('mc_shipping'))
+            tax = float(request.POST.__getitem__('tax'))
+            
+            #get shopper info
+            payer_email = request.POST.__getitem__('payer_email')
+            first_name = request.POST.__getitem__('first_name')
+            #error
+            last_name = request.POST.__getitem__('last_name')
+            payer_business_name = request.POST.__getitem__('payer_business_name')
+            address_street = request.POST.__getitem__('address_street')
+            address_city = request.POST.__getitem__('address_city')
+            address_state = request.POST.__getitem__('address_state')
+            address_country = request.POST.__getitem__('address_country')
+            contact_phone = request.POST.__getitem__('contact_phone')
+        except:
+            pass
         
         #find the order in the system
         order = Order.objects.get(id=order_id)
