@@ -288,11 +288,10 @@ def order_succeeded(order, total, payer_email):
     html_content = t.render(Context({'order': order, 'total':total}))
     text_content = t.render(Context({'order': order, 'total':total}))
     
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg = EmailMultiAlternatives('Order Received', text_content, from_email, settings.STORE_OWNERS)
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 
-    #update the page?
     
 def get_paypal_form(request):
     '''this gets called anytime the viewcart page gets updated, to keep the paypal form in sync'''
