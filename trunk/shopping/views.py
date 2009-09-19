@@ -210,23 +210,23 @@ def handle_paypal_notify(request):
         #find the order in the system
         order = Order.objects.get(id=order_id)
         
-        #log order details
-        log +='\n Payer Email: '
-        log += payer_email
-        log += ' \n Payment Status: '
-        log += payment_status
-        log += " \n Order ID: " 
-        log += order_id
-        log += "\n Receiver Email: "
-        log += receiver_email
-        log += "\n Gross: "
-        log += str(mc_gross)
-        log += "\n Handling: "
-        log += str(mc_handling)
-        log += "\n Shipping: "
-        log += str(mc_shipping)
-        log += "\n Tax: "
-        log += str(tax)
+#        #log order details
+#        log +='\n Payer Email: '
+#        log += payer_email
+#        log += ' \n Payment Status: '
+#        log += payment_status
+#        log += " \n Order ID: " 
+#        log += order_id
+#        log += "\n Receiver Email: "
+#        log += receiver_email
+#        log += "\n Gross: "
+#        log += str(mc_gross)
+#        log += "\n Handling: "
+#        log += str(mc_handling)
+#        log += "\n Shipping: "
+#        log += str(mc_shipping)
+#        log += "\n Tax: "
+#        log += str(tax)
     
 #        valid = True
 #        
