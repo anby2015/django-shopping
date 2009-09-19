@@ -180,7 +180,7 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     #get order info
     log = "\n\n ---------Paypal notification result----------"
-    #log += "\n Date: " + str(datetime.date.today())
+    log += "\n Date: " + str(datetime.date.today())
     payer_email = ""
     payment_status = ""
     order = None
@@ -228,54 +228,54 @@ def handle_paypal_notify(request):
         log += "\n Tax: "
         log += str(tax)
     
-        valid = True
-        
-        #Verify transaction with paypal
-        data = dict(request.POST.items())
-        args = {'cmd': '_notify-validate'}
-        args.update(data)
-        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
-        response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
-        log += "\n VERIFIED: "
-        log += str(response)
-        if str(response) != 'VERIFIED':
-            valid = False
-            log += "\n Failed because paypal verification was not VERIFIED" 
-        
-        #TODO: Verify correct payment_status
-        
-        #Verify correct receiver email
-        if receiver_email != settings.PAYPAL_ADDRESS:
-            valid = False
-            log += "\n Failed because receiver email and paypal_address in settings were different"
-            
-        #Verify correct price:  gross - (shipping + tax + handling)
-        subtotal = (mc_gross - mc_handling - mc_shipping - tax)
-        if str(subtotal) != str(order.get_subtotal()):
-            valid = False
-            log += "\n Failed because subtotal returned was different. "
-            log += "\n Required: " + str(order.get_subtotal())
-            log += "\n Actual: " + str(subtotal)
-        log += "\n Subtotal: "
-        log += str(subtotal)
-        
-        if valid:
-            log += "\n ORDER VALID"
-            #internally process the order
-            order_succeeded(order)
-            
-            #prepare the email content to the buyer
-            t = loader.get_template('shopping/email/email_buyer.html')
-            buyer_email_content = t.render(Context({'order': order, 'total':total}))
-            
-            #prepare the email content to the seller
-            t = loader.get_template('shopping/email/email_seller.html')
-            seller_email_content = t.render(Context({'order': order, 'total':total}))
-            log += "\n email content prepared"
-            
-            notify_by_email(buyer_email_content, seller_email_content)
-        else:
-            log += "\n ORDER INVALID!"
+#        valid = True
+#        
+#        #Verify transaction with paypal
+#        data = dict(request.POST.items())
+#        args = {'cmd': '_notify-validate'}
+#        args.update(data)
+#        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+#        response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
+#        log += "\n VERIFIED: "
+#        log += str(response)
+#        if str(response) != 'VERIFIED':
+#            valid = False
+#            log += "\n Failed because paypal verification was not VERIFIED" 
+#        
+#        #TODO: Verify correct payment_status
+#        
+#        #Verify correct receiver email
+#        if receiver_email != settings.PAYPAL_ADDRESS:
+#            valid = False
+#            log += "\n Failed because receiver email and paypal_address in settings were different"
+#            
+#        #Verify correct price:  gross - (shipping + tax + handling)
+#        subtotal = (mc_gross - mc_handling - mc_shipping - tax)
+#        if str(subtotal) != str(order.get_subtotal()):
+#            valid = False
+#            log += "\n Failed because subtotal returned was different. "
+#            log += "\n Required: " + str(order.get_subtotal())
+#            log += "\n Actual: " + str(subtotal)
+#        log += "\n Subtotal: "
+#        log += str(subtotal)
+#        
+#        if valid:
+#            log += "\n ORDER VALID"
+#            #internally process the order
+#            order_succeeded(order)
+#            
+#            #prepare the email content to the buyer
+#            t = loader.get_template('shopping/email/email_buyer.html')
+#            buyer_email_content = t.render(Context({'order': order, 'total':total}))
+#            
+#            #prepare the email content to the seller
+#            t = loader.get_template('shopping/email/email_seller.html')
+#            seller_email_content = t.render(Context({'order': order, 'total':total}))
+#            log += "\n email content prepared"
+#            
+#            notify_by_email(buyer_email_content, seller_email_content)
+#        else:
+#            log += "\n ORDER INVALID!"
          
     #log transactions for manual inspection
     filename = "transaction-log.txt"
