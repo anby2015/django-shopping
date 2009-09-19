@@ -178,6 +178,7 @@ def view_item_details(request, slug):
 def handle_paypal_notify(request):
     #get order info
     log = "\n\n ---------Paypal notification result---------- \n"
+    log += "\n Date: " + str(datetime.date.today())
     payer_email = ""
     payment_status = ""
     order = None
