@@ -247,11 +247,10 @@ def handle_paypal_notify(request):
         
         if valid:
             log += "\n ORDER VALID"
-            order_succeeded(order) #internally process the order
+            order_succeeded(order, mc_gross, payer_email) #internally process the order
         else:
             log += "\n ORDER INVALID!"
-            #TODO log invalid attempts for manual inspection
-    
+         
     #log transactions for manual inspection
     filename = "transaction-log.txt"
     file = open(filename, 'a')
@@ -259,7 +258,7 @@ def handle_paypal_notify(request):
     file.close()
     return HttpResponse('')
 
-def order_succeeded(order):
+def order_succeeded(order, total, payer_email):
     #set order to completed
     order.status = 2
     order.date = datetime.date.today()
@@ -274,16 +273,12 @@ def order_succeeded(order):
     from django.template import loader
     from django.template import Context
     t = loader.get_template('shopping/email.html')
-    html_content = t.render(Context({'order': order}))
-    text_content = t.render(Context({'order': order}))
+    html_content = t.render(Context({'order': order, 'total':total}))
+    text_content = t.render(Context({'order': order, 'total':total}))
     
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
-    
-#    from django.core.mail import send_mail
-#    send_mail('Thank you for your order', 'Here is the message.', 'tavacischool@gmail.com',
-#    ['davidcgeddes@gmail.com'], fail_silently=False)
 
     #update the page?
     
