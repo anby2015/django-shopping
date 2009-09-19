@@ -18,6 +18,11 @@
 
 {% block content %}
 	{% load shopping_tags %}
+	{% if tag_name %}
+		<h1>{{tag_name}}</h1>
+	{% else %}
+		<h1>All Items</h1>
+	{% endif %}
 	{% load magictags %}
 	<!-- display the filter by magictags -->
 	{% get_list_magictags items "shopping_tags" %}
@@ -37,6 +42,6 @@
 		</div>
 	{% endfor %}
 
-<a href="{% url shopping-cart %}">View Cart (<span id="cart_item_count">{{order.get_item_count}}</span> items)</a>
+
 
 {% endblock content %}
