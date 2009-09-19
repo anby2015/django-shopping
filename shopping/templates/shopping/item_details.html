@@ -83,19 +83,15 @@
 		<img id="shopping_main_image" src="{{main_image.get_shopping_main_url}}" alt="picture of {{item.name}}"/>
 		<br/>
 		<div class="shopping_item_full_details">
-			<em>Tags</em><br/><span class="shopping_item_description">
+			<em>Tags:</em><span class="shopping_item_description">
 				    {% for tag in item.tags.all %}
 					   {{tag.name}}
 				    {% endfor %}
 				  </span>
 			<br/><br/>
-			TODO: full details here... TODO: full details here...
+			<div id="item_content">{{item.content}}</div>
 		</div>
 	</div>
 	
 	
-	
-	
-	
-	<a href="{% url shopping-cart %}" id="shopping_viewcart">View Cart (<span id="cart_item_count">{{order.get_item_count}}</span> items)</a>
 {% endblock content %}
