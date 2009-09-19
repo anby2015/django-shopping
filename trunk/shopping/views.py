@@ -203,13 +203,13 @@ def handle_paypal_notify(request):
         last_name = request.POST.__getitem__('last_name')
         payer_business_name = request.POST.__getitem__('payer_business_name')
         address_street = request.POST.__getitem__('address_street')
-        address_city = request.POST.__getitem__('address_city')
-        address_state = request.POST.__getitem__('address_state')
-        address_country = request.POST.__getitem__('address_country')
-        contact_phone = request.POST.__getitem__('contact_phone')
-        
-        #find the order in the system
-        order = Order.objects.get(id=order_id)
+#        address_city = request.POST.__getitem__('address_city')
+#        address_state = request.POST.__getitem__('address_state')
+#        address_country = request.POST.__getitem__('address_country')
+#        contact_phone = request.POST.__getitem__('contact_phone')
+#        
+#        #find the order in the system
+#        order = Order.objects.get(id=order_id)
         #error
         
 #        #log order details
