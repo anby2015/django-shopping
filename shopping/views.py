@@ -268,12 +268,23 @@ def order_succeeded(order, total, payer_email):
     #send email notifications
     from django.core.mail import EmailMultiAlternatives
     #TODO: needs to go to the shopper instead of davidcgeddes@gmail.com
-    subject, from_email, to = 'Order Confirmation', settings.PAYPAL_ADDRESS, 'davidcgeddes@gmail.com'
+    subject, from_email, to = 'Order Confirmation', settings.PAYPAL_ADDRESS, "davidcgeddes@gmail.com"
     
-    #load the email template
+    #Email the buyer
     from django.template import loader
     from django.template import Context
-    t = loader.get_template('shopping/email.html')
+    t = loader.get_template('shopping/email/email_buyer.html')
+    html_content = t.render(Context({'order': order, 'total':total}))
+    text_content = t.render(Context({'order': order, 'total':total}))
+    
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+    
+     #Email the seller
+    from django.template import loader
+    from django.template import Context
+    t = loader.get_template('shopping/email/email_seller.html')
     html_content = t.render(Context({'order': order, 'total':total}))
     text_content = t.render(Context({'order': order, 'total':total}))
     
