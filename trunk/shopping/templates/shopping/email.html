@@ -2,6 +2,7 @@
 <img src="{{MEDIA_URL}}shopping/images/logo.jpg"/>
 <p>Thank you for shopping with TaVaci!</p>
 <p>Order ID: {{order.id}}</p>
+<p>Selections:</p>
 <ol>
 {% for selection in order.selection_set.all %}
 	<li>{{selection}}</li>
