@@ -240,7 +240,7 @@ def handle_paypal_notify(request):
         if subtotal != order.get_subtotal():
             valid = False
             log += "\n Failed because subtotal returned was different"
-        log += "\n Price: "
+        log += "\n Subtotal: "
         log += str(subtotal)
         
         if valid:
