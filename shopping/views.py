@@ -199,13 +199,10 @@ def handle_paypal_notify(request):
         #get shopper info
         
         payer_email = request.POST.__getitem__('payer_email')
-        
         first_name = request.POST.__getitem__('first_name')
-      
         last_name = request.POST.__getitem__('last_name')
         #error
-        payer_business_name = request.POST.__getitem__('payer_business_name')
-#        address_street = request.POST.__getitem__('address_street')
+        address_street = request.POST.__getitem__('address_street')
 #        address_city = request.POST.__getitem__('address_city')
 #        address_state = request.POST.__getitem__('address_state')
 #        address_country = request.POST.__getitem__('address_country')
@@ -221,9 +218,8 @@ def handle_paypal_notify(request):
         log += '\n Payer name:'
         log += first_name
         log += last_name
-        log += payer_business_name
-#        log +='\n Payer address: '
-#        log += address_street
+        log +='\n Payer address: '
+        log += address_street
 #        log += address_city
 #        log += address_state
 #        log += address_country
