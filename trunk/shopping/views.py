@@ -206,7 +206,7 @@ def handle_paypal_notify(request):
         address_city = request.POST.__getitem__('address_city')
         address_state = request.POST.__getitem__('address_state')
         address_country = request.POST.__getitem__('address_country')
-#        contact_phone = request.POST.__getitem__('contact_phone')
+        contact_phone = request.POST.__getitem__('contact_phone')
         #error
         
         #find the order in the system
@@ -223,8 +223,8 @@ def handle_paypal_notify(request):
         log += address_city
         log += address_state
         log += address_country
-#        log +='\n Payer contact phone: '
-#        log += contact_phone
+        log +='\n Payer contact phone: '
+        log += contact_phone
 #        
 #        log += ' \n Payment Status: '
 #        log += payment_status
