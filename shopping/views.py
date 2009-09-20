@@ -276,13 +276,15 @@ def handle_paypal_notify(request):
             #prepare the email content to the buyer
             t = loader.get_template('shopping/email/email_buyer.html')
             payer_email_content = t.render(Context({'order': order, 'total':mc_gross}))
+            payer_email_content_text = t.render(Context({'order': order, 'total':mc_gross}))
             
             #prepare the email content to the seller
             t = loader.get_template('shopping/email/email_seller.html')
             seller_email_content = t.render(Context({'order': order, 'total':mc_gross}))
+            seller_email_content_text = t.render(Context({'order': order, 'total':mc_gross}))
             log += "\n email content prepared"
             
-            notify_by_email(payer_email, payer_email_content, seller_email_content)
+            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
             #error
         else:
             log += "\n ORDER INVALID!"
@@ -300,18 +302,18 @@ def order_succeeded(order):
     order.date = datetime.date.today()
     order.save()
     
-def notify_by_email(payer_email, payer_email_content, seller_email_content):
+def notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text):
     '''send email notifications to the buyer and the seller(s)'''
     from django.core.mail import EmailMultiAlternatives
     from_email = settings.PAYPAL_ADDRESS
     
     #email the buyer 
-    payer_msg = EmailMultiAlternatives('Order Confirmation', payer_email_content, from_email, [payer_email])
+    payer_msg = EmailMultiAlternatives('Order Confirmation', payer_email_content_text, from_email, [payer_email])
     payer_msg.attach_alternative(buyer_email_content, "text/html")
     payer_msg.send()
    
     #email the seller(s)
-    seller_msg = EmailMultiAlternatives('Order Received', seller_email_content, from_email, settings.STORE_OWNERS)
+    seller_msg = EmailMultiAlternatives('Order Received', seller_email_content_text, from_email, settings.STORE_OWNERS)
     seller_msg.attach_alternative(seller_email_content, "text/html")
     seller_msg.send()
     
