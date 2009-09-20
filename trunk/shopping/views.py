@@ -187,64 +187,61 @@ def handle_paypal_notify(request):
     price = 0
     
     if request.method == "POST":
-        try:
-            #get order info
-            payment_status = request.POST.__getitem__('payment_status')
-            order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
-            receiver_email = request.POST.__getitem__('receiver_email')
-            mc_gross = float(request.POST.__getitem__('mc_gross'))
-            mc_handling = float(request.POST.__getitem__('mc_handling'))
-            mc_shipping = float(request.POST.__getitem__('mc_shipping'))
-            tax = float(request.POST.__getitem__('tax'))
-            
-            #get shopper info
-            #error
-#            payer_email = request.POST.__getitem__('payer_email')
-#            first_name = request.POST.__getitem__('first_name')
-#            last_name = request.POST.__getitem__('last_name')
-#            payer_business_name = request.POST.__getitem__('payer_business_name')
-#            address_street = request.POST.__getitem__('address_street')
-#            address_city = request.POST.__getitem__('address_city')
-#            address_state = request.POST.__getitem__('address_state')
-#            address_country = request.POST.__getitem__('address_country')
-#            contact_phone = request.POST.__getitem__('contact_phone')
-            #error
-        except:
-            log += "\n ERROR parsing post variables"
+        #get order info
+        payment_status = request.POST.__getitem__('payment_status')
+        order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
+        receiver_email = request.POST.__getitem__('receiver_email')
+        mc_gross = float(request.POST.__getitem__('mc_gross'))
+        mc_handling = float(request.POST.__getitem__('mc_handling'))
+        mc_shipping = float(request.POST.__getitem__('mc_shipping'))
+        tax = float(request.POST.__getitem__('tax'))
+        
+        #get shopper info
+        #error
+#        payer_email = request.POST.__getitem__('payer_email')
+#        first_name = request.POST.__getitem__('first_name')
+#        last_name = request.POST.__getitem__('last_name')
+#        payer_business_name = request.POST.__getitem__('payer_business_name')
+#        address_street = request.POST.__getitem__('address_street')
+#        address_city = request.POST.__getitem__('address_city')
+#        address_state = request.POST.__getitem__('address_state')
+#        address_country = request.POST.__getitem__('address_country')
+#        contact_phone = request.POST.__getitem__('contact_phone')
+        #error
         
         #find the order in the system
         order = Order.objects.get(id=order_id)
         
         #log order details
-        log +='\n Payer Email: '
-        log += payer_email
-        log += '\n Payer name:'
-        log += first_name
-        log += last_name
-        log +='\n Payer address: '
-        log += address_street
-        log += address_city
-        log += address_state
-        log += address_country
-        log +='\n Payer contact phone: '
-        log += contact_phone
-        
-        log += ' \n Payment Status: '
-        log += payment_status
-        log += " \n Order ID: " 
-        log += order_id
-        log += "\n Receiver Email: "
-        log += receiver_email
-        log += "\n Gross: "
-        log += str(mc_gross)
-        log += "\n Handling: "
-        log += str(mc_handling)
-        log += "\n Shipping: "
-        log += str(mc_shipping)
-        log += "\n Tax: "
-        log += str(tax)
-    
-        valid = True
+#        log +='\n Payer Email: '
+#        log += payer_email
+#        log += '\n Payer name:'
+#        log += first_name
+#        log += last_name
+#        log +='\n Payer address: '
+#        log += address_street
+#        log += address_city
+#        log += address_state
+#        log += address_country
+#        log +='\n Payer contact phone: '
+#        log += contact_phone
+#        
+#        log += ' \n Payment Status: '
+#        log += payment_status
+#        log += " \n Order ID: " 
+#        log += order_id
+#        log += "\n Receiver Email: "
+#        log += receiver_email
+#        log += "\n Gross: "
+#        log += str(mc_gross)
+#        log += "\n Handling: "
+#        log += str(mc_handling)
+#        log += "\n Shipping: "
+#        log += str(mc_shipping)
+#        log += "\n Tax: "
+#        log += str(tax)
+#    
+#        valid = True
 #        
 #        #Verify transaction with paypal
 #        data = dict(request.POST.items())
