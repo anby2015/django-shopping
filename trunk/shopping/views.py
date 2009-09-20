@@ -202,12 +202,9 @@ def handle_paypal_notify(request):
         first_name = request.POST.__getitem__('first_name')
         last_name = request.POST.__getitem__('last_name')
         address_street = request.POST.__getitem__('address_street')
-        #error
         address_city = request.POST.__getitem__('address_city')
         address_state = request.POST.__getitem__('address_state')
         address_country = request.POST.__getitem__('address_country')
-        contact_phone = request.POST.__getitem__('contact_phone')
-        #error
         
         #find the order in the system
         order = Order.objects.get(id=order_id)
@@ -223,23 +220,21 @@ def handle_paypal_notify(request):
         log += address_city
         log += address_state
         log += address_country
-        log +='\n Payer contact phone: '
-        log += contact_phone
-#        
-#        log += ' \n Payment Status: '
-#        log += payment_status
-#        log += " \n Order ID: " 
-#        log += order_id
-#        log += "\n Receiver Email: "
-#        log += receiver_email
-#        log += "\n Gross: "
-#        log += str(mc_gross)
-#        log += "\n Handling: "
-#        log += str(mc_handling)
-#        log += "\n Shipping: "
-#        log += str(mc_shipping)
-#        log += "\n Tax: "
-#        log += str(tax)
+        
+        log += ' \n Payment Status: '
+        log += payment_status
+        log += " \n Order ID: " 
+        log += order_id
+        log += "\n Receiver Email: "
+        log += receiver_email
+        log += "\n Gross: "
+        log += str(mc_gross)
+        log += "\n Handling: "
+        log += str(mc_handling)
+        log += "\n Shipping: "
+        log += str(mc_shipping)
+        log += "\n Tax: "
+        log += str(tax)
 #    
 #        valid = True
 #        
