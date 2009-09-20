@@ -201,8 +201,8 @@ def handle_paypal_notify(request):
             payer_email = request.POST.__getitem__('payer_email')
             first_name = request.POST.__getitem__('first_name')
             #error
-            last_name = request.POST.__getitem__('last_name')
-            payer_business_name = request.POST.__getitem__('payer_business_name')
+#            last_name = request.POST.__getitem__('last_name')
+#            payer_business_name = request.POST.__getitem__('payer_business_name')
             address_street = request.POST.__getitem__('address_street')
             address_city = request.POST.__getitem__('address_city')
             address_state = request.POST.__getitem__('address_state')
@@ -210,7 +210,7 @@ def handle_paypal_notify(request):
             contact_phone = request.POST.__getitem__('contact_phone')
             #error
         except:
-            pass
+            log += "\n ERROR parsing post variables"
         
         #find the order in the system
         order = Order.objects.get(id=order_id)
