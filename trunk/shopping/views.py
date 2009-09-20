@@ -277,12 +277,16 @@ def handle_paypal_notify(request):
             t = loader.get_template('shopping/email/email_buyer.html')
             payer_email_content = t.render(Context({'order': order, 'total':mc_gross}))
             payer_email_content_text = t.render(Context({'order': order, 'total':mc_gross}))
+            log += '\n payer email message:'
+            log += payer_email_content
             
             #prepare the email content to the seller
             t = loader.get_template('shopping/email/email_seller.html')
             seller_email_content = t.render(Context({'order': order, 'total':mc_gross}))
             seller_email_content_text = t.render(Context({'order': order, 'total':mc_gross}))
             log += "\n email content prepared"
+            log += '\n seller email message:'
+            log += seller_email_content
             
             #error
 #            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
