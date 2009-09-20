@@ -275,14 +275,14 @@ def handle_paypal_notify(request):
             #error
             #prepare the email content to the buyer
             t = loader.get_template('shopping/email/email_buyer.html')
-            buyer_email_content = t.render(Context({'order': order, 'total':mc_gross}))
+            payer_email_content = t.render(Context({'order': order, 'total':mc_gross}))
             
             #prepare the email content to the seller
             t = loader.get_template('shopping/email/email_seller.html')
             seller_email_content = t.render(Context({'order': order, 'total':mc_gross}))
             log += "\n email content prepared"
             
-#            notify_by_email(buyer_email_content, seller_email_content)
+            notify_by_email(payer_email, payer_email_content, seller_email_content)
             #error
         else:
             log += "\n ORDER INVALID!"
@@ -300,13 +300,13 @@ def order_succeeded(order):
     order.date = datetime.date.today()
     order.save()
     
-def notify_by_email(buyer_email_content, seller_email_content):
+def notify_by_email(payer_email, payer_email_content, seller_email_content):
     '''send email notifications to the buyer and the seller(s)'''
     from django.core.mail import EmailMultiAlternatives
     from_email = settings.PAYPAL_ADDRESS
     
     #email the buyer 
-    msg = EmailMultiAlternatives('Order Confirmation', buyer_email_content, from_email, [payer_email])
+    msg = EmailMultiAlternatives('Order Confirmation', payer_email_content, from_email, [payer_email])
     msg.attach_alternative(buyer_email_content, "text/html")
     msg.send()
    
