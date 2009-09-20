@@ -203,11 +203,11 @@ def handle_paypal_notify(request):
             #error
 #            last_name = request.POST.__getitem__('last_name')
 #            payer_business_name = request.POST.__getitem__('payer_business_name')
-            address_street = request.POST.__getitem__('address_street')
-            address_city = request.POST.__getitem__('address_city')
-            address_state = request.POST.__getitem__('address_state')
-            address_country = request.POST.__getitem__('address_country')
-            contact_phone = request.POST.__getitem__('contact_phone')
+#            address_street = request.POST.__getitem__('address_street')
+#            address_city = request.POST.__getitem__('address_city')
+#            address_state = request.POST.__getitem__('address_state')
+#            address_country = request.POST.__getitem__('address_country')
+#            contact_phone = request.POST.__getitem__('contact_phone')
             #error
         except:
             log += "\n ERROR parsing post variables"
