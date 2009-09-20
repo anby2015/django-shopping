@@ -306,14 +306,14 @@ def notify_by_email(payer_email, payer_email_content, seller_email_content):
     from_email = settings.PAYPAL_ADDRESS
     
     #email the buyer 
-    msg = EmailMultiAlternatives('Order Confirmation', payer_email_content, from_email, [payer_email])
-    msg.attach_alternative(buyer_email_content, "text/html")
-    msg.send()
+    payer_msg = EmailMultiAlternatives('Order Confirmation', payer_email_content, from_email, [payer_email])
+    payer_msg.attach_alternative(buyer_email_content, "text/html")
+    payer_msg.send()
    
     #email the seller(s)
-    msg = EmailMultiAlternatives('Order Received', seller_email_content, from_email, settings.STORE_OWNERS)
-    msg.attach_alternative(seller_email_content, "text/html")
-    msg.send()
+    seller_msg = EmailMultiAlternatives('Order Received', seller_email_content, from_email, settings.STORE_OWNERS)
+    seller_msg.attach_alternative(seller_email_content, "text/html")
+    seller_msg.send()
     
     
 def get_paypal_form(request):
