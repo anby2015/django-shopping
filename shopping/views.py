@@ -272,7 +272,7 @@ def handle_paypal_notify(request):
             #internally process the order
             order_succeeded(order)
             
-            #error
+          
             #prepare the email content to the buyer
             t = loader.get_template('shopping/email/email_buyer.html')
             payer_email_content = t.render(Context({'order': order, 'total':mc_gross}))
@@ -284,7 +284,8 @@ def handle_paypal_notify(request):
             seller_email_content_text = t.render(Context({'order': order, 'total':mc_gross}))
             log += "\n email content prepared"
             
-            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
+            #error
+#            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
             #error
         else:
             log += "\n ORDER INVALID!"
