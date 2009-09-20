@@ -218,6 +218,17 @@ def handle_paypal_notify(request):
         #log order details
         log +='\n Payer Email: '
         log += payer_email
+        log += '\n Payer name:'
+        log += first_name
+        log += last_name
+        log +='\n Payer address: '
+        log += address_street
+        log += address_city
+        log += address_state
+        log += address_country
+        log +='\n Payer contact phone: '
+        log += contact_phone
+        
         log += ' \n Payment Status: '
         log += payment_status
         log += " \n Order ID: " 
