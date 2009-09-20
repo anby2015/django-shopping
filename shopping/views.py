@@ -198,9 +198,9 @@ def handle_paypal_notify(request):
             tax = float(request.POST.__getitem__('tax'))
             
             #get shopper info
-            payer_email = request.POST.__getitem__('payer_email')
-            first_name = request.POST.__getitem__('first_name')
             #error
+#            payer_email = request.POST.__getitem__('payer_email')
+#            first_name = request.POST.__getitem__('first_name')
 #            last_name = request.POST.__getitem__('last_name')
 #            payer_business_name = request.POST.__getitem__('payer_business_name')
 #            address_street = request.POST.__getitem__('address_street')
