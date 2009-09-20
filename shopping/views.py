@@ -197,9 +197,10 @@ def handle_paypal_notify(request):
         tax = float(request.POST.__getitem__('tax'))
         
         #get shopper info
-        #error
+        
         payer_email = request.POST.__getitem__('payer_email')
-#        first_name = request.POST.__getitem__('first_name')
+        #error
+        first_name = request.POST.__getitem__('first_name')
 #        last_name = request.POST.__getitem__('last_name')
 #        payer_business_name = request.POST.__getitem__('payer_business_name')
 #        address_street = request.POST.__getitem__('address_street')
@@ -213,10 +214,10 @@ def handle_paypal_notify(request):
         order = Order.objects.get(id=order_id)
         
         #log order details
-#        log +='\n Payer Email: '
-#        log += payer_email
-#        log += '\n Payer name:'
-#        log += first_name
+        log +='\n Payer Email: '
+        log += payer_email
+        log += '\n Payer name:'
+        log += first_name
 #        log += last_name
 #        log +='\n Payer address: '
 #        log += address_street
