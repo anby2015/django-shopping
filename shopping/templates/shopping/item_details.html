@@ -62,7 +62,7 @@
 			<div id="shopping_action_box">
 				<input type="image" class="add_to_cart" id="{{item.id}}" alt="Add To Cart" src="{{MEDIA_URL}}shopping/images/add_to_cart.png" />
 				<div id="shopping_action_details">
-					<span class="shopping_item_price">${{item.price}}</span><br/>
+					<span class="shopping_item_price">${{item.price|floatformat:2}}</span><br/>
 					<span class="num_in_cart">{% get_num_in_cart item order %}</span> in cart<br/>
 					<span id="item_added_notice" class="shopping_notice" style="display:none;">Item added</span>
 					<div id="shopping_variations">
