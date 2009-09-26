@@ -1,7 +1,7 @@
 <h1>Order Received</h1>
 <img src="http://pro.tavacischool.com/media/shopping/images/logo.jpg"/>
-<p>You have received a new order. See paypal email for all details.</p>
-<p>Customer:<br/>
+<p>You have received a new order. Details below:</p>
+<p>
     <b>{{first_name}} {{last_name}}</b><br/>
 	{{address_street}}<br/>
 	{{address_city}}<br/>
@@ -26,4 +26,6 @@ Handling: ${{mc_handling|floatformat:2}}<br/>
 Tax: ${{tax|floatformat:2}}<br/>
 <b>Total: ${{mc_gross|floatformat:2}}</b>
 </p>
+
+<p>For full transaction details see the accompanying email from PayPal</p>
 
