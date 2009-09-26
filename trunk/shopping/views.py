@@ -289,7 +289,7 @@ def handle_paypal_notify(request):
             log += seller_email_content
             
             #error
-#            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
+            notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
             #error
         else:
             log += "\n ORDER INVALID!"
@@ -313,9 +313,9 @@ def notify_by_email(payer_email, payer_email_content, payer_email_content_text, 
     from_email = settings.PAYPAL_ADDRESS
     
     #email the buyer 
-#    payer_msg = EmailMultiAlternatives('Order Confirmation', payer_email_content_text, from_email, [payer_email])
-#    payer_msg.attach_alternative(buyer_email_content, "text/html")
-#    payer_msg.send()
+    payer_msg = EmailMultiAlternatives('Order Confirmation', payer_email_content_text, from_email, [payer_email])
+    payer_msg.attach_alternative(payer_email_content, "text/html")
+    payer_msg.send()
    
     #email the seller(s)
     seller_msg = EmailMultiAlternatives('Order Received', seller_email_content_text, from_email, settings.STORE_OWNERS)

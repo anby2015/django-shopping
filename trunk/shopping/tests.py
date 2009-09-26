@@ -170,12 +170,19 @@ class ViewTest(TestCase):
         self.assertEquals(order.get_item_count(), 0, 'order should be empty')
         
     def test_order_succeeed(self):
-        ''' Test that emails are sent properly'''
+        ''' Test that orders are internally processed correctly'''
         from shopping.models import Order
         from shopping.views import order_succeeded
         order = Order.objects.create()
         response = order_succeeded(order)
-        # Test that one message has been sent.
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(order.status, 2, 'should be 2 for completed')
 
-        
+    def test_notify_by_email(self):
+        '''Test that email notifications are sent'''
+        from shopping.views import notify_by_email
+        payer_email_content = '<h1>Thanks for shopping!</h1>'
+        payer_email_content_text = 'Thanks for shopping!'
+        seller_email_content = '<h1>Order Received</h1>'
+        seller_email_content_text = 'Order Received'
+        notify_by_email('bobdole@bob.com', payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
+        self.assertEquals(len(mail.outbox), 2)
