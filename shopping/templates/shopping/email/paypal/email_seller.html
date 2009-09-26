@@ -8,16 +8,22 @@
 	{{address_state}}<br/>
 	{{address_country}}
 </p>
-<p>Order ID: {{order.id}}</p>
-<p>Selections:</p>
+
+<p>Order ID: {{order.id}}<br/>
+Date: {{order.date}}<br/>
+Selections:<br/>
 <ol>
 {% for selection in order.selection_set.all %}
 	<li>{{selection}}</li>
 {% endfor %}
 </ol>
-<p>Subtotal: {{order.get_subtotal}}</p>
-<p>Shipping: {{mc_shipping}}</p>
-<p>Handling: {{mc_handling}}</p>
-<p>Tax: {{tax}}</p>
-<p><b>Total: {{mc_gross}}</b></p>
+</p>
+
+<p>
+Subtotal: {{order.get_subtotal}}<br/>
+Shipping: {{mc_shipping}}<br/>
+Handling: {{mc_handling}}<br/>
+Tax: {{tax}}<br/>
+<b>Total: {{mc_gross}}</b>
+</p>
 
