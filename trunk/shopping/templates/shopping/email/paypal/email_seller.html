@@ -14,7 +14,7 @@ Date: {{order.date}}<br/>
 Selections:<br/>
 <ol>
 {% for selection in order.selection_set.all %}
-	<li>{{selection.name}} {{selection.display_variations}} x {{selection.quantity}}</li>
+	<li>{{selection.item.name}} {{selection.display_variations}} x {{selection.quantity}}</li>
 {% endfor %}
 </ol>
 </p>
