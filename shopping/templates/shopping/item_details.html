@@ -89,7 +89,7 @@
 				    {% endfor %}
 				  </span>
 			<br/><br/>
-			<div id="item_content">{{item.content}}</div>
+			<div id="item_content">{% if item.content %}{{item.content}}{% endif %}</div>
 		</div>
 	</div>
 	
