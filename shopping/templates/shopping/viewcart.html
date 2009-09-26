@@ -136,7 +136,7 @@
 						{{selection.display_variations}}</span>
 					{% endifnotequal %}
 				</span>
-				<span class="shopping_item_price">${{selection.item.price}} x</span> 
+				<span class="shopping_item_price">${{selection.item.price|floatformat:2}} x</span> 
 				<span class="shopping_selection_quantity"><input type="text" name={{selection.id}} value="{{selection.quantity}}" /></span>
 			</div>
 			{% endifnotequal %}
