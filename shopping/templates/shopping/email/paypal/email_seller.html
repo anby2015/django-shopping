@@ -1,6 +1,13 @@
 <h1>Order Received</h1>
 <img src="http://pro.tavacischool.com/media/shopping/images/logo.jpg"/>
 <p>You have received a new order. See paypal email for all details.</p>
+<p>Customer:<br/>
+    <b>{{first_name}} {{last_name}}</b><br/>
+	{{address_street}}<br/>
+	{{address_city}}<br/>
+	{{address_state}}<br/>
+	{{address_country}}
+</p>
 <p>Order ID: {{order.id}}</p>
 <p>Selections:</p>
 <ol>
@@ -9,5 +16,8 @@
 {% endfor %}
 </ol>
 <p>Subtotal: {{order.get_subtotal}}</p>
-<p><b>Total: {{total}}</b></p>
-<p>See the corresponding paypal email for the full transaction information, including buyer's shipping address.</p>
+<p>Shipping: {{mc_shipping}}</p>
+<p>Handling: {{mc_handling}}</p>
+<p>Tax: {{tax}}</p>
+<p><b>Total: {{mc_gross}}</b></p>
+
