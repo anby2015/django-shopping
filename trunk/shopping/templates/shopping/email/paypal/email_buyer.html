@@ -9,5 +9,8 @@
 {% endfor %}
 </ol>
 <p>Subtotal: {{order.get_subtotal}}</p>
-<p><b>Total: {{total}}</b></p>
+<p>Shipping: {{mc_shipping}}</p>
+<p>Handling: {{mc_handling}}</p>
+<p>Tax: {{tax}}</p>
+<p><b>Total: {{mc_gross}}</b></p>
 <p>See your paypal account for your full receipt. Thanks for your business!</p>
