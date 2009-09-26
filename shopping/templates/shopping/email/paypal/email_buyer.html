@@ -1,0 +1,13 @@
+<h1>Order Confirmation</h1>
+<img src="http://pro.tavacischool.com/media/shopping/images/logo.jpg"/>
+<p>Thank you for shopping with TaVaci!</p>
+<p>Order ID: {{order.id}}</p>
+<p>Selections:</p>
+<ol>
+{% for selection in order.selection_set.all %}
+	<li>{{selection}}</li>
+{% endfor %}
+</ol>
+<p>Subtotal: {{order.get_subtotal}}</p>
+<p><b>Total: {{total}}</b></p>
+<p>See your paypal account for your full receipt. Thanks for your business!</p>
