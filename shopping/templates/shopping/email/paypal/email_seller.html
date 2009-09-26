@@ -20,10 +20,10 @@ Selections:<br/>
 </p>
 
 <p>
-Subtotal: {{order.get_subtotal}}<br/>
-Shipping: {{mc_shipping}}<br/>
-Handling: {{mc_handling}}<br/>
-Tax: {{tax}}<br/>
-<b>Total: {{mc_gross}}</b>
+Subtotal: ${{order.get_subtotal|floatformat:2}}<br/>
+Shipping: ${{mc_shipping|floatformat:2}}<br/>
+Handling: ${{mc_handling|floatformat:2}}<br/>
+Tax: ${{tax|floatformat:2}}<br/>
+<b>Total: ${{mc_gross|floatformat:2}}</b>
 </p>
 
