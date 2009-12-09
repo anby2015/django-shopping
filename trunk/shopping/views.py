@@ -278,28 +278,21 @@ def handle_paypal_notify(request):
             t = loader.get_template('shopping/email/paypal/email_buyer.html')
             payer_email_content = t.render(Context(locals()))
             payer_email_content_text = t.render(Context(locals()))
-            log += '\n payer email message:'
-            log += payer_email_content
             
             #prepare the email content to the seller
             t = loader.get_template('shopping/email/paypal/email_seller.html')
             seller_email_content = t.render(Context(locals()))
             seller_email_content_text = t.render(Context(locals()))
-            log += "\n email content prepared"
-            log += '\n seller email message:'
-            log += seller_email_content
             
-            #error
             notify_by_email(payer_email, payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
-            #error
         else:
             log += "\n ORDER INVALID!"
-         
-    #log transactions for manual inspection
-    filename = "transaction-log.txt"
-    file = open(filename, 'a')
-    file.write(log)
-    file.close()
+            #log invalid transactions for manual inspection
+            filename = "invalid-transaction-log.txt"
+            file = open(filename, 'a')
+            file.write(log)
+            file.close()
+    
     return HttpResponse('')
 
 def order_succeeded(order):
