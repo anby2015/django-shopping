@@ -5,6 +5,7 @@ from django.core import mail
 from django.template import loader
 from django.template import Context
 from shopping.models import Order
+from shopping.views import *
 
 class ViewTest(TestCase):
     fixtures = ['tests/auth.json', 'tests/shopping.json', 'tests/magictags.json']
@@ -238,3 +239,10 @@ class ViewTest(TestCase):
             'address_country': 'USA'
                   }
         c.post('/shopping/notify/paypal/', params)
+        
+    def test_get_paypal_url(self):
+        url = get_paypal_url()
+        if settings.PAYPAL_LIVE == True:
+            self.assertEquals(url, "https://www.paypal.com/cgi-bin/webscr")
+        else:
+            self.assertEquals(url, "https://www.sandbox.paypal.com/cgi-bin/webscr")
