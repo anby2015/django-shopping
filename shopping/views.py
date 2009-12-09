@@ -323,18 +323,18 @@ def notify_by_email(payer_email, payer_email_content, payer_email_content_text, 
     seller_msg.send()
     
     
+def get_paypal_url():
+    if settings.PAYPAL_LIVE == True:
+        return "https://www.paypal.com/cgi-bin/webscr"
+    else:
+        return "https://www.sandbox.paypal.com/cgi-bin/webscr"
+
+    
 def get_paypal_form(request):
     '''this gets called anytime the viewcart page gets updated, to keep the paypal form in sync'''
     context = {}
     context['order'] = shopping_utils.get_order(request)
     context['business'] = settings.PAYPAL_ADDRESS
     context['paypal_url'] = get_paypal_url()
-    return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request)) 
-
-def get_paypal_url():
-    if settings.PAYPAL_LIVE == True:
-        return "https://www.paypal.com/cgi-bin/webscr"
-    else:
-        return "https://www.sandbox.paypal.com/cgi-bin/webscr"
-    
+    return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request))    
     
