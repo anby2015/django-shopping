@@ -272,7 +272,6 @@ def handle_paypal_notify(request):
             #internally process the order
             order_succeeded(order)
             
-          
             #prepare the email content to the buyer
             t = loader.get_template('shopping/email/paypal/email_buyer.html')
             payer_email_content = t.render(Context(locals()))

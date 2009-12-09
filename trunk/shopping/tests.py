@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import simplejson
 from django.core import mail
+from django.template import loader
+from django.template import Context
 
 class ViewTest(TestCase):
     fixtures = ['tests/auth.json', 'tests/shopping.json', 'tests/magictags.json']
@@ -182,7 +184,30 @@ class ViewTest(TestCase):
         from shopping.views import notify_by_email
         payer_email_content = '<h1>Thanks for shopping!</h1>'
         payer_email_content_text = 'Thanks for shopping!'
-        seller_email_content = '<h1>Order Received</h1>'
-        seller_email_content_text = 'Order Received'
-        notify_by_email('bobdole@bob.com', payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
+#        seller_email_content = '<h1>Order Received</h1>'
+#        seller_email_content_text = 'Order Received'
+        
+        log = "\n-----------test log----------"
+        #prepare the email content to the buyer
+        t = loader.get_template('shopping/email/paypal/email_buyer.html')
+        payer_email_content = t.render(Context(locals()))
+        payer_email_content_text = t.render(Context(locals()))
+        log += '\n payer email message:'
+        log += payer_email_content
+        
+        #prepare the email content to the seller
+        t = loader.get_template('shopping/email/paypal/email_seller.html')
+        seller_email_content = t.render(Context(locals()))
+        seller_email_content_text = t.render(Context(locals()))
+        log += "\n email content prepared"
+        log += '\n seller email message:'
+        log += seller_email_content
+        
+        
+        notify_by_email('davidcgeddes@gmail.com', payer_email_content, payer_email_content_text, seller_email_content, seller_email_content_text)
         self.assertEquals(len(mail.outbox), 2)
+        #log transactions for manual inspection
+        filename = "transaction-log-test.txt"
+        file = open(filename, 'a')
+        file.write(log)
+        file.close()
