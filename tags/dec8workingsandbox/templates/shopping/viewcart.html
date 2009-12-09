@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+	<link rel="stylesheet" href="{{MEDIA_URL}}shopping/css/shopping.css" />
+	<script type="text/javascript" src="{{MEDIA_URL}}shopping/js/labs_json.js"></script>	
+	<script type="text/javascript">
+	var cartSelectionChanged = false;
+	$(document).ready(function(){
+		$("#update_cart").bind("click", updateCart);
+		$("#paypal_submit").live("click", handlePaypalClick);
+		$("#selections input").bind("click", function(){
+			cartSelectionChanged = true;
+		});
+		//turn the update cart link blue when a quantity is changed
+		$("#selections input").bind("change", function(){
+			$("#update_cart").css("color", "#0085CF");
+		});
+		$("#empty_cart").bind("click", handleEmptyCart);
+		
+		//set the notify url for paypal
+		var notifyPath = "{% url shopping-paypal-notify %}"
+		$('#shopping_notify_url').attr("value", getURL() + notifyPath);
+	});
+	
+	function handleEmptyCart(e){
+		e.preventDefault();
+		var answer = confirm("Are you sure you want to empty your cart?");
+		if (answer){
+			//empty cart
+			$.ajax({
+				'url': '{% url shopping-empty-cart %}',
+				'success': function(response){
+					 //refresh page
+					 window.location = "";	
+				}
+				});
+		}
+	}
+	
+	function handlePaypalClick(e){
+		if(cartSelectionChanged){
+			e.preventDefault();
+			updateCart(e, true);
+		}
+	}
+	
+	function updateCart(e, andCheckout){
+		e.preventDefault();
+		//send updates to server
+		var selections = {};
+		$("#selections input").each(function(){
+			var selection = {};
+			selections[$(this).attr("name")] = $(this).attr("value");
+		});
+		var selectionsSerialized = $.param(selections);
+		
+		$.post("{% url shopping-update %}", selectionsSerialized, function(xml){
+			cartSelectionChanged = false;
+			//grab a new copy of the paypal form template.
+			updatePaypalCheckoutForm(xml, andCheckout);
+			
+			//update the total item count
+			var new_count = jQuery(xml).find('itemcount').text();
+			$("#cart_item_count").html(new_count);
+			
+			//update the price subtotal
+			var new_price = '$' 
+			new_price += jQuery(xml).find('subtotal').text();
+			$("#shopping_subtotal").html(new_price);
+			
+			//inform the user of success
+			$("#update_cart").css("color", "#A5A5A5");//change 'update cart' color back from blue
+			$("#cart_updated_notice").slideDown("fast")
+			setTimeout(
+				'$("#cart_updated_notice").slideUp("fast");',
+				3000
+			);
+			
+			//remove any selection rows on the page that have quantity of zero
+			$('span.shopping_selection_quantity input').each(function(){
+				var quantity = $(this).attr("value");
+				if (quantity == 0){
+					var selectionElem = $(this).parent().parent();
+					$(selectionElem).fadeOut('medium', function(){
+						//when done fading remove from done
+						$(selectionElem).remove();
+					});
+				}
+			});
+		},
+		"XML");
+	}
+	
+	function getURL(){
+		var fullURL = document.location.href;
+		var array = fullURL.split("//");
+		var protocol = array[0];
+		var domain = array[1].split("/")[0];
+		var url = protocol + '//' + domain;
+		return url;	
+	}
+
+	function updatePaypalCheckoutForm(response, andCheckout){
+		var newFormHtml = '';
+		$.get("{% url shopping-paypal-form %}", function(response){
+			$('#paypalcheckout').replaceWith(response);
+			//proceed to checkout if checkout was what caused the update call
+			if (andCheckout == true){
+				$("#paypal_submit").trigger("click");
+			}
+		});
+	}
+	</script>
+{% endblock extrahead %}
+
+{% block content %}
+	<h1>Review and Checkout</h1>
+	<div id="shopping_review_checkout">
+	{% ifequal order.get_item_count 0 %}
+		<p class="shopping_notice">Your cart is empty</p>
+		<a id="continue_shopping" href="{% url shopping-items %}">Continue Shopping</a>
+	{% else %}
+		<div id="other_cart_actions">
+			<a id="continue_shopping" href="{% url shopping-items %}">Continue Shopping</a>
+			&nbsp;<a id="empty_cart" href="#">Empty Cart</a>
+			&nbsp;<a id="update_cart" href="#">Update Cart</a>
+			<span id="cart_updated_notice" class="shopping_notice" style="display:none;">&nbsp;Cart Updated</span>
+		</div>
+		<div id="selections">
+		{% for selection in order.selection_set.all %}
+			{% ifnotequal selection.quantity 0 %}
+			<div class="shopping_item_bar_checkout">
+				<span class="shopping_item_name"><a href="{% url shopping-item selection.item.name_slug %}">{{selection.item.name}}</a>
+					{% ifnotequal selection.item_variations.count 0 %}
+						<span class="shopping_item_description">
+						{{selection.display_variations}}</span>
+					{% endifnotequal %}
+				</span>
+				<span class="shopping_item_price">${{selection.item.price|floatformat:2}} x</span> 
+				<span class="shopping_selection_quantity"><input type="text" name={{selection.id}} value="{{selection.quantity}}" /></span>
+			</div>
+			{% endifnotequal %}
+		{% endfor %}
+		</div>
+		
+		<span id="shopping_subtotal">${{order.get_subtotal}}</span>
+		
+		<!--include Palpal form template. -->
+		{% include "shopping/paypal_form.html" %}
+		
+	{% endifequal %}	
+	
+	</div>
+{% endblock content %}

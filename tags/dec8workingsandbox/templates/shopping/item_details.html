@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load shopping_tags %}
+
+{% block extrahead %}
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}shopping/css/shopping.css" />
+	
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("input.add_to_cart").bind("click", addToCart);
+		$("#shopping_item_thumbs a").bind("click", viewImage);
+	});	
+	
+	function addToCart(e){
+		e.preventDefault();
+		var url = '{% url shopping-add %}';
+		//send the item and the quantity
+		var params = {};
+		var item_id = $(this).attr('id');
+		params['item_id'] = item_id;
+		params['quantity'] = 1;
+		//get the item variations if any
+		$('#'+item_id).parent().find(".item_variation").each(function(){
+			var elem = $(this);
+			var key = $(elem).attr("name");
+			var value = $(elem).val();
+			params[key] = value;
+		});
+		
+		$.post(url, params, function(response){
+			//update the item's number in cart
+			$('span.num_in_cart').html(response.num_in_cart);
+			//update the total item count
+			$("#cart_item_count").html(response.item_count);
+			//inform the user of success
+			$("#item_added_notice").slideDown("fast");
+			$(".num_in_cart").addClass("shopping_notice");
+			setTimeout(
+				'$("#item_added_notice").slideUp("fast");$(".num_in_cart").removeClass("shopping_notice");',
+				3000
+			);
+		}, "json");
+	}
+	
+	function viewImage(e){
+		e.preventDefault();
+		//get the url of the new image
+		var a = $(e.target).parent();
+		var href = $(a).attr("href");
+		//switch out the images
+		$("#shopping_main_image").attr("src", href);
+	}
+	
+	</script>
+{% endblock extrahead %}
+
+{% block content %}
+	<div class="shopping_item_bar item_details">
+		<span class="shopping_item_name">{{item.name}}</span>	
+	</div>
+	<div id="shopping_details" class="item_details">
+		<div id="shopping_rightcol">
+			<div id="shopping_action_box">
+				<input type="image" class="add_to_cart" id="{{item.id}}" alt="Add To Cart" src="{{MEDIA_URL}}shopping/images/add_to_cart.png" />
+				<div id="shopping_action_details">
+					<span class="shopping_item_price">${{item.price|floatformat:2}}</span><br/>
+					<span class="num_in_cart">{% get_num_in_cart item order %}</span> in cart<br/>
+					<span id="item_added_notice" class="shopping_notice" style="display:none;">Item added</span>
+					<div id="shopping_variations">
+						{% get_item_variations item %}
+					</div>
+				</div>
+				
+				<br/>
+			</div>
+			<div id="shopping_item_thumbs">
+				{% for image in item.images.all %}
+					<a href="{{image.get_shopping_main_url}}" alt="{{image.name}}"><img src="{{image.get_shopping_thumbnail_url}}"/></a>
+				{% endfor %}
+			</div>
+		</div>
+		<span class="shopping_item_description">{{item.description}}</span>
+		<br/>
+		<img id="shopping_main_image" src="{{main_image.get_shopping_main_url}}" alt="picture of {{item.name}}"/>
+		<br/>
+		<div class="shopping_item_full_details">
+			<em>Tags:</em><span class="shopping_item_description">
+				    {% for tag in item.tags.all %}
+					   {{tag.name}}
+				    {% endfor %}
+				  </span>
+			<br/><br/>
+			<div id="item_content">{% if item.content %}{{item.content}}{% endif %}</div>
+		</div>
+	</div>
+	
+	
+{% endblock content %}

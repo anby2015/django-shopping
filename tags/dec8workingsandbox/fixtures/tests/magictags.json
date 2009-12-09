@@ -1,0 +1,106 @@
+[
+    {
+        "pk": 1, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                1, 
+                2
+            ], 
+            "name": "Men's", 
+            "slug": "mens"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                2, 
+                3
+            ], 
+            "name": "Women's", 
+            "slug": "womens"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                1, 
+                2
+            ], 
+            "name": "Tops", 
+            "slug": "tops"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                3
+            ], 
+            "name": "Accessories", 
+            "slug": "accessories"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                1
+            ], 
+            "name": "Summer", 
+            "slug": "summer"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                1, 
+                4
+            ], 
+            "name": "Sale", 
+            "slug": "sale"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                4, 
+                6
+            ], 
+            "name": "Misc", 
+            "slug": "misc"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                2
+            ], 
+            "name": "Winter", 
+            "slug": "winter"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "magictags.tag", 
+        "fields": {
+            "items": [
+                2
+            ], 
+            "name": "Fall", 
+            "slug": "fall"
+        }
+    }
+]
