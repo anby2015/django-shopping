@@ -187,12 +187,7 @@ def handle_paypal_notify(request):
     order = None
     price = 0
     
-    if request.method == "POST":
-        filename = "transaction-log.txt"
-        file = open(filename, 'a')
-        file.write("POST happened")
-        file.close()
-    
+    if request.method == "POST":    
         #get order info
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
