@@ -197,7 +197,6 @@ def handle_paypal_notify(request):
         tax = float(request.POST.__getitem__('tax'))
         
         #get shopper info
-        
         payer_email = request.POST.__getitem__('payer_email')
         first_name = request.POST.__getitem__('first_name')
         last_name = request.POST.__getitem__('last_name')
@@ -258,7 +257,7 @@ def handle_paypal_notify(request):
             log += "\n Failed because receiver email and paypal_address in settings were different"
             
         #Verify correct price:  gross - (shipping + tax + handling)
-        subtotal = (mc_gross - mc_handling - mc_shipping - tax)
+        subtotal = floatformat(mc_gross - mc_handling - mc_shipping - tax, 2)
         if str(subtotal) != str(order.get_subtotal()):
             valid = False
             log += "\n Failed because subtotal returned was different. "
