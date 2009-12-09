@@ -25,7 +25,7 @@ def display_items(request):
 
 def display_items_by_tag(request, tag_slug):
     context = {}
-    items = Item.objects.filter(tags__slug__contains=tag_slug).distinct()
+    items = Item.objects.filter(tags__slug__exact=tag_slug).distinct()
     context['items'] = items
     tag_name = Tag.objects.get(slug=tag_slug)
     context['tag_name'] = tag_name
