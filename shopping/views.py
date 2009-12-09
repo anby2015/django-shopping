@@ -46,6 +46,7 @@ def view_cart(request):
     context = {}
     business = settings.PAYPAL_ADDRESS
     context['business'] = business
+    context['paypal_url'] = get_paypal_url()
     
     #get or create current order
     order = shopping_utils.get_order(request)
