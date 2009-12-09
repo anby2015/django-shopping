@@ -4,6 +4,7 @@ from django.utils import simplejson
 from django.core import mail
 from django.template import loader
 from django.template import Context
+from shopping.models import Order
 
 class ViewTest(TestCase):
     fixtures = ['tests/auth.json', 'tests/shopping.json', 'tests/magictags.json']
@@ -211,3 +212,29 @@ class ViewTest(TestCase):
         file = open(filename, 'a')
         file.write(log)
         file.close()
+        
+    def test_handle_paypal_notify(self):
+        c = self.client
+        
+        #create an order to work with and its id
+        c.post('/shopping/cart/add/', {'item_id': 2, 'quantity': 1, 'variation_Size': 'Medium'})
+        orderID = Order.objects.all()[0].id
+        
+        '''simulate a paypal POST'''
+        params = {
+            'payment_status' : 'flavio',
+            'custom': orderID,
+            'receiver_email' : 'davidcgeddes@gmail.com',
+            'mc_gross': 19.99,
+            'mc_handling': 0,
+            'mc_shipping' : 0,
+            'tax': 0,
+            'payer_email' : 'bob@bobdole.com',
+            'first_name': 'Bob',
+            'last_name': 'Dole',
+            'address_street': '127 Bob Street',
+            'address_city': 'Rexburg',
+            'address_state': 'Idaho',
+            'address_country': 'USA'
+                  }
+        c.post('/shopping/notify/paypal/', params)

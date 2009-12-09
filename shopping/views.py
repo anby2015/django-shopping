@@ -177,7 +177,7 @@ def view_item_details(request, slug):
     return render_to_response('shopping/item_details.html', context, context_instance=RequestContext(request)) 
 
 
-#This method gets called when an order is purchased or refunded. Paypal does a POST callback
+#This method gets called when an order is purchased. Paypal does a POST callback
 def handle_paypal_notify(request):
     #get order info
     log = "\n\n ---------Paypal notification result----------"
