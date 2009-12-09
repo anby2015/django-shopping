@@ -15,6 +15,7 @@ import urllib2
 import datetime
 from django.template import loader
 from django.template import Context
+from django.template.defaultfilters import floatformat
 
 def display_items(request):
     context = {}
