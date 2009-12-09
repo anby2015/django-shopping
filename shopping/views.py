@@ -188,11 +188,6 @@ def handle_paypal_notify(request):
     price = 0
     
     if request.method == "POST":
-        filename = "transaction-log.txt"
-        file = open(filename, 'a')
-        file.write("POST received from paypal")
-        file.close()
-    
         #get order info
         payment_status = request.POST.__getitem__('payment_status')
         order_id = request.POST.__getitem__('custom') #the order id sent in the paypal form
@@ -247,7 +242,8 @@ def handle_paypal_notify(request):
         data = dict(request.POST.items())
         args = {'cmd': '_notify-validate'}
         args.update(data)
-        verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+        #verify_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+        verify_url = get_paypal_url()
         response = urllib2.urlopen(verify_url, urllib.urlencode(args)).read()
         log += "\n VERIFIED: "
         log += str(response)
@@ -332,6 +328,13 @@ def get_paypal_form(request):
     context = {}
     context['order'] = shopping_utils.get_order(request)
     context['business'] = settings.PAYPAL_ADDRESS
+    context['paypal_url'] = get_paypal_url()
     return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request)) 
+
+def get_paypal_url():
+    if settings.PAYPAL_LIVE == True:
+        return "https://www.paypal.com/cgi-bin/webscr"
+    else:
+        return "https://www.sandbox.paypal.com/cgi-bin/webscr"
     
     
