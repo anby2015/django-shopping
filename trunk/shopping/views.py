@@ -16,14 +16,16 @@ import datetime
 from django.template import loader
 from django.template import Context
 from django.template.defaultfilters import floatformat
+from shopping.decorators import *
 
+@check_allow_guest_shoppers
 def display_items(request):
     context = {}
     items = Item.objects.all()
     context['items'] = items
-    
     return render_to_response('shopping/item_list.html', context, context_instance=RequestContext(request))
 
+@check_allow_guest_shoppers
 def display_items_by_tag(request, tag_slug):
     context = {}
     items = Item.objects.filter(tags__slug__exact=tag_slug).distinct()
@@ -32,6 +34,7 @@ def display_items_by_tag(request, tag_slug):
     context['tag_name'] = tag_name
     return render_to_response('shopping/item_list.html', context, context_instance=RequestContext(request))
 
+@check_allow_guest_shoppers
 def empty_cart(request):
     #get the order
     order = shopping_utils.get_order(request)
@@ -42,6 +45,7 @@ def empty_cart(request):
     responseJSON = simplejson.dumps(response)
     return HttpResponse(responseJSON)
 
+@check_allow_guest_shoppers
 def view_cart(request):
     context = {}
     business = settings.PAYPAL_ADDRESS
@@ -54,6 +58,7 @@ def view_cart(request):
     
     return render_to_response('shopping/viewcart.html', context, context_instance=RequestContext(request))
   
+@check_allow_guest_shoppers
 def update_cart(request):
     """This method is called when user changes selection quantities on the view cart page, when user clicks 'update cart' or before final checkout.
        key value pair is selection id, selection quantity """
@@ -82,6 +87,7 @@ def update_cart(request):
         xml += '</response>'
         return HttpResponse(xml)
     
+@check_allow_guest_shoppers
 def add_to_cart(request):
     '''Add an item to the shopping cart'''
     if request.method == "POST":
@@ -159,7 +165,7 @@ def add_to_cart(request):
         responseJSON = simplejson.dumps(response)
         return HttpResponse(responseJSON)
 
-
+@check_allow_guest_shoppers
 def view_item_details(request, slug):
     context = {}
     #get the item that matches the slug
@@ -330,5 +336,5 @@ def get_paypal_form(request):
     context['order'] = shopping_utils.get_order(request)
     context['business'] = settings.PAYPAL_ADDRESS
     context['paypal_url'] = get_paypal_url()
-    return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request))    
+    return render_to_response('shopping/paypal_form.html', context, context_instance=RequestContext(request))  
     
